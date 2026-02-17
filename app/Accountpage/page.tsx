@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
 import { createClient } from '@/lib/supabase/client'
+export const dynamic = "force-dynamic";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 type Profile = {
