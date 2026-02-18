@@ -115,18 +115,30 @@ function LoginPageInner() {
       }
       toast.success("Welcome back!");
       //router.push('/Accountpage/${data.user.id}')
-      router.push(`/Accountpage/${data.user.id}`)
+      router.push(`/Accountpage/${data.user.id}`);
       router.refresh();
     }
     setLoading(false);
   }
 
-  async function handleGoogle() {
+  /*async function handleGoogle() {
     setGoogleLoading(true);
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
         redirectTo: `${window.location.origin}/auth/callback?next=${redirectTo}`,
+      },
+    });
+    if (error) toast.error(error.message);
+    setGoogleLoading(false);
+  }*/
+ async function handleGoogle() {
+    setGoogleLoading(true);
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${origin}/auth/callback?next=${redirectTo}`,
       },
     });
     if (error) toast.error(error.message);
