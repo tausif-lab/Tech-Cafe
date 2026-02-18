@@ -115,7 +115,7 @@ function LoginPageInner() {
       }
       toast.success("Welcome back!");
       //router.push('/Accountpage/${data.user.id}')
-      router.push(`/Accountpage/${data.user.id}`);
+      router.push(`/Accountpage`);
       router.refresh();
     }
     setLoading(false);
@@ -132,9 +132,9 @@ function LoginPageInner() {
     if (error) toast.error(error.message);
     setGoogleLoading(false);
   }*/
- async function handleGoogle() {
+  async function handleGoogle() {
     setGoogleLoading(true);
-    const origin = typeof window !== 'undefined' ? window.location.origin : '';
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
