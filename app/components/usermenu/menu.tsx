@@ -1,4 +1,4 @@
-"use client";
+"use client";//haa mere jaaaaaaaan
 import React, { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { useCart } from "./Cartcontext";
