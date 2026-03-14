@@ -270,7 +270,7 @@ export default function AccountPage() {
           </Link>
           <div className="flex items-center gap-4">
             <Link
-              href="/"
+              href="/categorysection"
               className="text-[9px] tracking-[0.45em] uppercase transition-colors duration-200"
               style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: 'rgba(232,225,207,0.35)' }}
             >
@@ -446,7 +446,7 @@ export default function AccountPage() {
                       No orders yet
                     </p>
                     <Link
-                      href="/"
+                      href="/categorysection"
                       className="inline-flex items-center gap-2 mt-4 px-5 py-2.5 text-[9px] font-bold tracking-widest uppercase transition-all duration-200 hover:opacity-90"
                       style={{
                         fontFamily: "'Plus Jakarta Sans', sans-serif",
@@ -538,7 +538,7 @@ export default function AccountPage() {
                     No orders placed yet
                   </p>
                   <Link
-                    href="/"
+                    href="/categorysection"
                     className="inline-flex items-center gap-2 mt-4 px-5 py-2.5 text-[9px] font-bold tracking-widest uppercase transition-all duration-200 hover:opacity-90"
                     style={{
                       fontFamily: "'Plus Jakarta Sans', sans-serif",
@@ -667,7 +667,7 @@ export default function AccountPage() {
           </div>
           <div className="flex items-center gap-3">
             <Link
-              href="/"
+              href="/categorysection"
               className="group flex items-center gap-2 text-[9px] font-semibold tracking-widest uppercase px-5 py-2.5 transition-all duration-200"
               style={{
                 fontFamily: "'Plus Jakarta Sans', sans-serif",

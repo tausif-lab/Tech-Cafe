@@ -1,7 +1,7 @@
 "use client";
 import React, { useRef, useState } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
-import { useCart } from "./Cartcontext";   // adjust path
+import { useCart } from "@/app/components/usermenu/Cartcontext";
 import { useRouter } from "next/navigation";
 
 const FontLoader = () => (
@@ -232,21 +232,147 @@ export default function BillingPage() {
   const [selectedPayment, setSelectedPayment] = useState("upi");
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [orderId, setOrderId] = useState<string | null>(null);
 
   const gst = Math.round(subtotal * GST_RATE);
   const total = subtotal + gst + PLATFORM_FEE;
 
   const handlePlaceOrder = async () => {
     setLoading(true);
-    // Simulate payment processing
-    await new Promise((r) => setTimeout(r, 1200));
-    setLoading(false);
-    setOrderPlaced(true);
+    
+    try {
+      // Convert cart items to API format
+      const orderItems = items.map(item => ({
+        id: crypto.randomUUID(),
+        menu_item_id: item.itemId.toString(),
+        name: item.name,
+        image_url: item.img,
+        is_veg: item.veg,
+        base_price: item.price,
+        variant_id: null,
+        variant_name: null,
+        variant_price_delta: 0,
+        add_ons: [],
+        add_ons_total: 0,
+        quantity: item.quantity,
+        unit_price: item.price,
+        total_price: item.price * item.quantity
+      }));
+      
+      // Create order (payment disabled for demo)
+      const orderResponse = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: orderItems,
+          paymentMethod: 'cash', // Default to cash for demo
+          notes: null
+        })
+      });
+      
+      const orderResult = await orderResponse.json();
+      
+      if (orderResult.error) {
+        alert('Failed to create order: ' + orderResult.error);
+        setLoading(false);
+        return;
+      }
+      
+      const { orderId: newOrderId } = orderResult.data;
+      setOrderId(newOrderId);
+      
+      // Simulate processing delay
+      await new Promise(r => setTimeout(r, 1000));
+      
+      setOrderPlaced(true);
+      setLoading(false);
+      
+      /* ═══════════════════════════════════════════════════════════
+         RAZORPAY PAYMENT INTEGRATION (DISABLED FOR DEMO)
+         
+         Uncomment this section when you have Razorpay KYC approved:
+         
+      // If cash payment, mark as complete
+      if (selectedPayment === 'cash') {
+        setOrderPlaced(true);
+        setLoading(false);
+        return;
+      }
+      
+      // Otherwise, initiate Razorpay payment
+      const paymentResponse = await fetch('/api/payments/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId: newOrderId })
+      });
+      
+      const paymentResult = await paymentResponse.json();
+      
+      if (paymentResult.error) {
+        alert('Failed to create payment: ' + paymentResult.error);
+        setLoading(false);
+        return;
+      }
+      
+      const { razorpayOrderId, cafeName, orderNumber, amount } = paymentResult.data;
+      
+      // Open Razorpay checkout
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!,
+        amount: amount * 100,
+        currency: 'INR',
+        name: cafeName,
+        description: `Order ${orderNumber}`,
+        order_id: razorpayOrderId,
+        handler: async (response: any) => {
+          // Verify payment
+          const verifyResponse = await fetch('/api/payments/verify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              orderId: newOrderId
+            })
+          });
+          
+          const verifyResult = await verifyResponse.json();
+          
+          if (verifyResult.error) {
+            alert('Payment verification failed: ' + verifyResult.error);
+            setLoading(false);
+            return;
+          }
+          
+          setOrderPlaced(true);
+          setLoading(false);
+        },
+        modal: {
+          ondismiss: () => {
+            setLoading(false);
+          }
+        }
+      };
+      
+      const razorpay = new (window as any).Razorpay(options);
+      razorpay.open();
+      
+      ═══════════════════════════════════════════════════════════ */
+      
+    } catch (error: any) {
+      alert('Error placing order: ' + error.message);
+      setLoading(false);
+    }
   };
 
   const handleDone = () => {
     clearCart();
-    router.push("/");
+    if (orderId) {
+      router.push(`/orders/${orderId}`);
+    } else {
+      router.push('/orders');
+    }
   };
 
   if (items.length === 0 && !orderPlaced) {

@@ -26,14 +26,18 @@ export default function AdminOrdersLive({ cafeId }: { cafeId: string }) {
   const supabase = createClient()
 
   async function fetchOrders() {
-    const { data } = await supabase
-      .from('orders')
-      .select('*, order_items(*)')
-      .eq('cafe_id', cafeId)
-      .in('status', ['pending', 'confirmed', 'preparing', 'ready'])
-      .order('created_at', { ascending: true })
-    setOrders(data ?? [])
-    setLoading(false)
+    try {
+      const response = await fetch('/api/admin/orders?status=pending,confirmed,preparing,ready')
+      const result = await response.json()
+      
+      if (result.data) {
+        setOrders(result.data)
+      }
+    } catch (error) {
+      console.error('Failed to fetch orders:', error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -51,33 +55,24 @@ export default function AdminOrdersLive({ cafeId }: { cafeId: string }) {
   }, [cafeId])
 
   async function updateStatus(orderId: string, status: string, reason?: string) {
-    const { error } = await supabase
-      .from('orders')
-      .update({ status, ...(reason ? { rejection_reason: reason } : {}) })
-      .eq('id', orderId)
+    try {
+      const response = await fetch(`/api/admin/orders/${orderId}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status, rejectionReason: reason })
+      })
 
-    if (error) { toast.error(error.message); return }
+      const result = await response.json()
+      
+      if (result.error) {
+        toast.error(result.error)
+        return
+      }
 
-    // Send push notification
-    const order = orders.find(o => o.id === orderId)
-    if (order) {
-      const notifMap: Record<string, { type: string; title: string; body: string }> = {
-        confirmed:  { type: 'order_confirmed',  title: 'Order Confirmed ✅',  body: `Your order ${order.order_number} is confirmed!`      },
-        preparing:  { type: 'order_preparing',  title: 'Preparing Now 👨‍🍳',  body: `Your order ${order.order_number} is being prepared!`  },
-        ready:      { type: 'order_ready',      title: 'Ready for Pickup 🎉', body: `Your order ${order.order_number} is ready! Come pick it up.` },
-        cancelled:  { type: 'order_cancelled',  title: 'Order Cancelled',     body: `Your order ${order.order_number} was cancelled.`     },
-      }
-      const notif = notifMap[status]
-      if (notif) {
-        await fetch('/api/push/send', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ user_id: order.user_id, ...notif, data: { url: `/track/${orderId}` } }),
-        })
-      }
+      toast.success(`Order updated to ${status}`)
+    } catch (error: any) {
+      toast.error(error.message)
     }
-
-    toast.success(`Order updated to ${status}`)
   }
 
   async function handleReject(orderId: string) {

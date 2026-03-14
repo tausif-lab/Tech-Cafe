@@ -128,6 +128,8 @@ const router = useRouter();
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+import { useCart } from "../usermenu/Cartcontext";
 
 const FontLoader = () => (
   <style>{`
@@ -138,6 +140,10 @@ const FontLoader = () => (
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const { totalItems } = useCart();
+  const router = useRouter();
+  const supabase = createClient();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -145,7 +151,22 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const router = useRouter();
+  useEffect(() => {
+    // Check if user is logged in
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    
+    checkUser();
+    
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+    
+    return () => subscription.unsubscribe();
+  }, []);
 
   return (
     <>
@@ -220,7 +241,87 @@ export default function Navbar() {
           </Link>
 
           {/* Right: nav links + CTA */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
+            {/* Cart button - always visible */}
+            <button
+              onClick={() => router.push('/billing')}
+              className="relative p-2 transition-all duration-200 hover:scale-110"
+              aria-label="Cart"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke={isScrolled ? "#1F3A2E" : "#E8E1CF"}
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <path d="M16 10a4 4 0 0 1-8 0" />
+              </svg>
+              {totalItems > 0 && (
+                <span
+                  className="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold"
+                  style={{
+                    backgroundColor: "#D94B4B",
+                    color: "#E8E1CF",
+                  }}
+                >
+                  {totalItems}
+                </span>
+              )}
+            </button>
+
+            {user ? (
+              // Show account icon when logged in
+              <button
+                onClick={() => router.push('/Accountpage')}
+                className="p-2 transition-all duration-200 hover:scale-110"
+                aria-label="Account"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke={isScrolled ? "#1F3A2E" : "#E8E1CF"}
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+              </button>
+            ) : (
+              // Show login button when not logged in
+              <button
+                onClick={() => router.push('/auth/login')}
+                className="hidden md:flex items-center gap-2 px-4 py-2 text-[9px] font-bold tracking-widest uppercase transition-all duration-200 hover:scale-[1.03] active:scale-[0.97]"
+                style={{
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  backgroundColor: "#D94B4B",
+                  color: "#E8E1CF",
+                  borderRadius: "4px",
+                }}
+              >
+                Login
+                <svg
+                  width="10"
+                  height="10"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </button>
+            )}
+
             {/* Hamburger menu for mobile */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
@@ -249,30 +350,6 @@ export default function Navbar() {
                 }}
               />
             </button>
-
-            {/* Login button - visible on desktop */}
-            <button
-              onClick={() => router.push('/auth/login')}
-              className="hidden md:flex items-center gap-2 px-4 py-2 text-[9px] font-bold tracking-widest uppercase transition-all duration-200 hover:scale-[1.03] active:scale-[0.97]"
-              style={{
-                fontFamily: "'Plus Jakarta Sans', sans-serif",
-                backgroundColor: "#D94B4B",
-                color: "#E8E1CF",
-                borderRadius: "4px",
-              }}
-            >
-              Login
-              <svg
-                width="10"
-                height="10"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-              >
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </button>
           </div>
         </div>
 
@@ -288,32 +365,50 @@ export default function Navbar() {
               borderBottom: "1px solid rgba(31,58,46,0.12)",
             }}
           >
-            <div className="px-6 py-4">
-              <button
-                onClick={() => {
-                  router.push('/auth/login');
-                  setMenuOpen(false);
-                }}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 text-[10px] font-bold tracking-widest uppercase transition-all duration-200"
-                style={{
-                  fontFamily: "'Plus Jakarta Sans', sans-serif",
-                  backgroundColor: "#D94B4B",
-                  color: "#E8E1CF",
-                  borderRadius: "4px",
-                }}
-              >
-                Login
-                <svg
-                  width="10"
-                  height="10"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
+            <div className="px-6 py-4 space-y-3">
+              {user ? (
+                <button
+                  onClick={() => {
+                    router.push('/Accountpage');
+                    setMenuOpen(false);
+                  }}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 text-[10px] font-bold tracking-widest uppercase transition-all duration-200"
+                  style={{
+                    fontFamily: "'Plus Jakarta Sans', sans-serif",
+                    backgroundColor: "#D94B4B",
+                    color: "#E8E1CF",
+                    borderRadius: "4px",
+                  }}
                 >
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </button>
+                  My Account
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    router.push('/auth/login');
+                    setMenuOpen(false);
+                  }}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 text-[10px] font-bold tracking-widest uppercase transition-all duration-200"
+                  style={{
+                    fontFamily: "'Plus Jakarta Sans', sans-serif",
+                    backgroundColor: "#D94B4B",
+                    color: "#E8E1CF",
+                    borderRadius: "4px",
+                  }}
+                >
+                  Login
+                  <svg
+                    width="10"
+                    height="10"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                  >
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                </button>
+              )}
             </div>
           </div>
         )}
