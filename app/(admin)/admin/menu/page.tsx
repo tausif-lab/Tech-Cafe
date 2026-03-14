@@ -107,8 +107,8 @@ export default function AdminMenuPage() {
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="font-display text-4xl font-bold">Menu</h1>
-          <p className="text-text-muted mt-1">{items.length} items</p>
+          <h1 className="font-display text-4xl font-bold text-white">Menu</h1>
+          <p className="text-gray-400 mt-1">{items.length} items</p>
         </div>
         <button
           onClick={() => {
@@ -131,8 +131,8 @@ export default function AdminMenuPage() {
             className={cn(
               "flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium border transition-all",
               filterCat === cat.id
-                ? "bg-gold text-black border-gold"
-                : "border-border text-text-muted",
+                ? "bg-yellow-500 text-black border-yellow-500"
+                : "border-zinc-800 text-gray-400",
             )}
           >
             {cat.name}
@@ -151,29 +151,29 @@ export default function AdminMenuPage() {
         <div className="card overflow-hidden">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-border text-left">
-                <th className="px-5 py-3 text-text-muted text-xs font-medium uppercase tracking-wider">
+              <tr className="border-b border-zinc-800 text-left">
+                <th className="px-5 py-3 text-gray-400 text-xs font-medium uppercase tracking-wider">
                   Item
                 </th>
-                <th className="px-5 py-3 text-text-muted text-xs font-medium uppercase tracking-wider">
+                <th className="px-5 py-3 text-gray-400 text-xs font-medium uppercase tracking-wider">
                   Category
                 </th>
-                <th className="px-5 py-3 text-text-muted text-xs font-medium uppercase tracking-wider">
+                <th className="px-5 py-3 text-gray-400 text-xs font-medium uppercase tracking-wider">
                   Price
                 </th>
-                <th className="px-5 py-3 text-text-muted text-xs font-medium uppercase tracking-wider">
+                <th className="px-5 py-3 text-gray-400 text-xs font-medium uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-5 py-3 text-text-muted text-xs font-medium uppercase tracking-wider">
+                <th className="px-5 py-3 text-gray-400 text-xs font-medium uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-border">
+            <tbody className="divide-y divide-zinc-800">
               {filtered.map((item) => (
                 <tr
                   key={item.id}
-                  className="hover:bg-surface-2/50 transition-colors"
+                  className="hover:bg-zinc-900/50 transition-colors"
                 >
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-3">
@@ -183,16 +183,16 @@ export default function AdminMenuPage() {
                           item.is_veg ? "bg-green-500" : "bg-red-500",
                         )}
                       />
-                      <span className="font-medium text-sm">{item.name}</span>
+                      <span className="font-medium text-sm text-white">{item.name}</span>
                       {item.is_featured && (
-                        <Star size={12} className="text-gold fill-gold" />
+                        <Star size={12} className="text-yellow-500 fill-yellow-500" />
                       )}
                     </div>
                   </td>
-                  <td className="px-5 py-3 text-text-muted text-sm">
+                  <td className="px-5 py-3 text-gray-400 text-sm">
                     {(item.category as any)?.name ?? "—"}
                   </td>
-                  <td className="px-5 py-3 text-gold font-semibold text-sm">
+                  <td className="px-5 py-3 text-yellow-500 font-semibold text-sm">
                     {formatCurrency(item.base_price)}
                   </td>
                   <td className="px-5 py-3">
@@ -207,8 +207,8 @@ export default function AdminMenuPage() {
                         </>
                       ) : (
                         <>
-                          <ToggleLeft size={18} className="text-text-muted" />
-                          <span className="text-text-muted">Unavailable</span>
+                          <ToggleLeft size={18} className="text-gray-400" />
+                          <span className="text-gray-400">Unavailable</span>
                         </>
                       )}
                     </button>
@@ -220,13 +220,13 @@ export default function AdminMenuPage() {
                           setEditItem(item);
                           setModalOpen(true);
                         }}
-                        className="w-8 h-8 rounded-lg bg-surface-2 flex items-center justify-center text-text-muted hover:text-white hover:bg-surface-3 transition-all"
+                        className="w-8 h-8 rounded-lg bg-zinc-900 flex items-center justify-center text-gray-400 hover:text-white hover:bg-zinc-800 transition-all"
                       >
                         <Pencil size={14} />
                       </button>
                       <button
                         onClick={() => deleteItem(item)}
-                        className="w-8 h-8 rounded-lg bg-surface-2 flex items-center justify-center text-text-muted hover:text-red-400 hover:bg-red-400/10 transition-all"
+                        className="w-8 h-8 rounded-lg bg-zinc-900 flex items-center justify-center text-gray-400 hover:text-red-400 hover:bg-red-400/10 transition-all"
                       >
                         <Trash2 size={14} />
                       </button>
@@ -237,7 +237,7 @@ export default function AdminMenuPage() {
             </tbody>
           </table>
           {filtered.length === 0 && (
-            <div className="text-center py-12 text-text-muted">
+            <div className="text-center py-12 text-gray-400">
               No items found
             </div>
           )}

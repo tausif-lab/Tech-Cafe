@@ -29,14 +29,15 @@ export async function GET(request: Request) {
       .from('orders')
       .select(`
         *,
-        order_items(*),
-        profiles!orders_user_id_fkey(full_name, phone)
+        order_items(*)
       `)
       .eq('cafe_id', profile.cafe_id)
       .order('created_at', { ascending: false })
     
     if (status) {
-      query = query.eq('status', status)
+      // Handle multiple statuses separated by comma
+      const statuses = status.split(',').map(s => s.trim())
+      query = query.in('status', statuses)
     }
     
     if (date) {
@@ -47,10 +48,14 @@ export async function GET(request: Request) {
     
     const { data, error } = await query
     
-    if (error) throw error
+    if (error) {
+      console.error('Admin orders fetch error:', error)
+      throw error
+    }
     
     return NextResponse.json({ data, error: null })
   } catch (error: any) {
+    console.error('Admin orders API error:', error)
     return NextResponse.json({ data: null, error: error.message }, { status: 500 })
   }
 }

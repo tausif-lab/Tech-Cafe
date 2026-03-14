@@ -31,16 +31,16 @@ export default function AdminSidebar() {
   }
 
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-64 bg-surface border-r border-border flex flex-col z-40">
+    <aside className="fixed left-0 top-0 bottom-0 w-64 bg-black border-r border-zinc-800 flex flex-col z-40">
       {/* Logo */}
-      <div className="p-6 border-b border-border">
+      <div className="p-6 border-b border-zinc-800">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gold flex items-center justify-center">
+          <div className="w-9 h-9 rounded-xl bg-yellow-500 flex items-center justify-center">
             <Coffee size={18} className="text-black" />
           </div>
           <div>
-            <p className="font-display text-lg font-bold text-gold">Tech Cafe</p>
-            <p className="text-text-muted text-xs">Admin Panel</p>
+            <p className="font-display text-lg font-bold text-yellow-500">Tech Cafe</p>
+            <p className="text-gray-400 text-xs">Admin Panel</p>
           </div>
         </div>
       </div>
@@ -59,8 +59,8 @@ export default function AdminSidebar() {
               className={cn(
                 'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200',
                 active
-                  ? 'bg-gold/10 text-gold border border-gold/20'
-                  : 'text-text-muted hover:text-white hover:bg-surface-2'
+                  ? 'bg-yellow-500/10 text-yellow-500 border border-yellow-500/20'
+                  : 'text-gray-400 hover:text-white hover:bg-zinc-900'
               )}
             >
               <Icon size={17} strokeWidth={active ? 2.5 : 1.8} />
@@ -71,10 +71,10 @@ export default function AdminSidebar() {
       </nav>
 
       {/* Logout */}
-      <div className="p-4 border-t border-border">
+      <div className="p-4 border-t border-zinc-800">
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm text-text-muted hover:text-red-400 hover:bg-red-400/5 transition-all"
+          className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm text-gray-400 hover:text-red-400 hover:bg-red-400/5 transition-all"
         >
           <LogOut size={17} />
           Sign out

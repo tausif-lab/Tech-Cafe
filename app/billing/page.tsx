@@ -163,14 +163,14 @@ function SuccessOverlay({ onDone }: { onDone: () => void }) {
       style={{ backgroundColor: "#1F3A2E" }}
     >
       <div className="flex flex-col items-center gap-6 text-center px-8">
-        <motion.div
+        {/* <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ duration: 0.45, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
           className="text-6xl"
         >
           ✅
-        </motion.div>
+        </motion.div> */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -243,8 +243,7 @@ export default function BillingPage() {
     try {
       // Convert cart items to API format
       const orderItems = items.map(item => ({
-        id: crypto.randomUUID(),
-        menu_item_id: item.itemId.toString(),
+        menu_item_id: null, // Will be null until we have real menu items
         name: item.name,
         image_url: item.img,
         is_veg: item.veg,

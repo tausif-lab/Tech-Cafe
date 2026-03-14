@@ -84,8 +84,8 @@ export default function AdminReportsPage() {
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="font-display text-4xl font-bold">Reports</h1>
-          <p className="text-text-muted mt-1">Paid orders only</p>
+          <h1 className="font-display text-4xl font-bold text-white">Reports</h1>
+          <p className="text-gray-400 mt-1">Paid orders only</p>
         </div>
         <button onClick={exportCSV} className="btn-outline flex items-center gap-2">
           <Download size={16} />Export CSV
@@ -97,7 +97,7 @@ export default function AdminReportsPage() {
         {(['today', 'week', 'month'] as const).map(r => (
           <button key={r} onClick={() => setRange(r)}
             className={`px-4 py-2 rounded-xl text-sm font-medium border transition-all capitalize
-              ${range === r ? 'bg-gold text-black border-gold' : 'border-border text-text-muted'}`}>
+              ${range === r ? 'bg-yellow-500 text-black border-yellow-500' : 'border-zinc-800 text-gray-400'}`}>
             {r === 'today' ? 'Today' : r === 'week' ? 'Last 7 days' : 'This month'}
           </button>
         ))}
@@ -111,8 +111,8 @@ export default function AdminReportsPage() {
           { label: 'Avg Order Value', value: formatCurrency(avgOrderValue),  icon: TrendingUp  },
         ].map(stat => (
           <div key={stat.label} className="card p-5">
-            <p className="text-text-muted text-xs mb-2">{stat.label}</p>
-            <p className="text-2xl font-bold text-gold">{stat.value}</p>
+            <p className="text-gray-400 text-xs mb-2">{stat.label}</p>
+            <p className="text-2xl font-bold text-yellow-500">{stat.value}</p>
           </div>
         ))}
       </div>
@@ -121,26 +121,26 @@ export default function AdminReportsPage() {
       {loading ? (
         <div className="space-y-2">{[...Array(5)].map((_, i) => <div key={i} className="skeleton h-12 rounded-xl" />)}</div>
       ) : orders.length === 0 ? (
-        <div className="text-center py-12 text-text-muted">No paid orders in this period</div>
+        <div className="text-center py-12 text-gray-400">No paid orders in this period</div>
       ) : (
         <div className="card overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border">
+              <tr className="border-b border-zinc-800">
                 {['Order #', 'Date', 'Items', 'Total'].map(h => (
-                  <th key={h} className="px-5 py-3 text-left text-text-muted text-xs font-medium uppercase tracking-wider">{h}</th>
+                  <th key={h} className="px-5 py-3 text-left text-gray-400 text-xs font-medium uppercase tracking-wider">{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-border">
+            <tbody className="divide-y divide-zinc-800">
               {orders.map(o => (
-                <tr key={o.order_number} className="hover:bg-surface-2/50">
-                  <td className="px-5 py-3 font-mono font-bold text-gold">{o.order_number}</td>
-                  <td className="px-5 py-3 text-text-muted text-xs">{new Date(o.created_at).toLocaleDateString('en-IN')}</td>
-                  <td className="px-5 py-3 text-text-muted text-xs max-w-xs truncate">
+                <tr key={o.order_number} className="hover:bg-zinc-900/50">
+                  <td className="px-5 py-3 font-mono font-bold text-yellow-500">{o.order_number}</td>
+                  <td className="px-5 py-3 text-gray-400 text-xs">{new Date(o.created_at).toLocaleDateString('en-IN')}</td>
+                  <td className="px-5 py-3 text-gray-400 text-xs max-w-xs truncate">
                     {o.order_items.map(i => `${i.quantity}× ${i.item_name}`).join(', ')}
                   </td>
-                  <td className="px-5 py-3 font-semibold">{formatCurrency(Number(o.total_amount))}</td>
+                  <td className="px-5 py-3 font-semibold text-white">{formatCurrency(Number(o.total_amount))}</td>
                 </tr>
               ))}
             </tbody>

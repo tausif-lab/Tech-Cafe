@@ -140,16 +140,16 @@ export async function POST(request: Request) {
     const orderItems = items.map(item => ({
       order_id: order.id,
       cafe_id: cafeId,
-      menu_item_id: item.menu_item_id,
+      menu_item_id: null, // Set to null since we don't have real menu items yet
       item_name: item.name,
       item_image_url: item.image_url,
       item_is_veg: item.is_veg,
-      variant_id: item.variant_id,
-      variant_name: item.variant_name,
+      variant_id: null,
+      variant_name: null,
       base_price: item.base_price,
-      variant_price_delta: item.variant_price_delta,
-      add_ons: item.add_ons,
-      add_ons_total: item.add_ons_total,
+      variant_price_delta: 0,
+      add_ons: item.add_ons || [],
+      add_ons_total: item.add_ons_total || 0,
       quantity: item.quantity,
       unit_price: item.unit_price,
       total_price: item.total_price

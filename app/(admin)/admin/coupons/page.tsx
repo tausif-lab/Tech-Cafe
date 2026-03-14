@@ -69,8 +69,8 @@ export default function AdminCouponsPage() {
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="font-display text-4xl font-bold">Coupons</h1>
-          <p className="text-text-muted mt-1">{coupons.length} coupons</p>
+          <h1 className="font-display text-4xl font-bold text-white">Coupons</h1>
+          <p className="text-gray-400 mt-1">{coupons.length} coupons</p>
         </div>
         <button onClick={() => setEditing(EMPTY)} className="btn-gold flex items-center gap-2">
           <Plus size={18} />New Coupon
@@ -88,12 +88,12 @@ export default function AdminCouponsPage() {
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <p className="font-bold font-mono text-gold">{coupon.code}</p>
-                    <span className={cn('text-[10px] px-1.5 py-0.5 rounded font-medium', coupon.is_active ? 'bg-green-400/10 text-green-400' : 'bg-surface-3 text-text-muted')}>
+                    <p className="font-bold font-mono text-yellow-500">{coupon.code}</p>
+                    <span className={cn('text-[10px] px-1.5 py-0.5 rounded font-medium', coupon.is_active ? 'bg-green-400/10 text-green-400' : 'bg-zinc-800 text-gray-400')}>
                       {coupon.is_active ? 'Active' : 'Inactive'}
                     </span>
                   </div>
-                  <p className="text-text-muted text-xs mt-0.5">{coupon.description}</p>
+                  <p className="text-gray-400 text-xs mt-0.5">{coupon.description}</p>
                 </div>
               </div>
               <div className="flex gap-2">
@@ -102,28 +102,28 @@ export default function AdminCouponsPage() {
               </div>
             </div>
 
-            <div className="flex gap-4 mt-4 pt-4 border-t border-border text-sm">
-              <div><p className="text-text-muted text-xs">Discount</p>
-                <p className="font-semibold">
+            <div className="flex gap-4 mt-4 pt-4 border-t border-zinc-800 text-sm">
+              <div><p className="text-gray-400 text-xs">Discount</p>
+                <p className="font-semibold text-white">
                   {coupon.discount_type === 'percentage' ? `${coupon.discount_value}%` : formatCurrency(coupon.discount_value)}
                   {coupon.max_discount_amount && ` (max ${formatCurrency(coupon.max_discount_amount)})`}
                 </p>
               </div>
-              <div><p className="text-text-muted text-xs">Min order</p><p className="font-semibold">{formatCurrency(coupon.min_order_value)}</p></div>
-              <div><p className="text-text-muted text-xs">Uses</p><p className="font-semibold">{coupon.used_count}{coupon.max_uses ? `/${coupon.max_uses}` : ''}</p></div>
-              {coupon.expires_at && <div><p className="text-text-muted text-xs">Expires</p><p className="font-semibold">{formatDate(coupon.expires_at)}</p></div>}
+              <div><p className="text-gray-400 text-xs">Min order</p><p className="font-semibold text-white">{formatCurrency(coupon.min_order_value)}</p></div>
+              <div><p className="text-gray-400 text-xs">Uses</p><p className="font-semibold text-white">{coupon.used_count}{coupon.max_uses ? `/${coupon.max_uses}` : ''}</p></div>
+              {coupon.expires_at && <div><p className="text-gray-400 text-xs">Expires</p><p className="font-semibold text-white">{formatDate(coupon.expires_at)}</p></div>}
             </div>
           </div>
         ))}
-        {coupons.length === 0 && <div className="text-center py-12 text-text-muted">No coupons yet</div>}
+        {coupons.length === 0 && <div className="text-center py-12 text-gray-400">No coupons yet</div>}
       </div>
 
       {/* Modal */}
       {editing && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setEditing(null)}>
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
-          <div className="relative w-full max-w-md bg-surface border border-border rounded-2xl p-6 animate-slide-up" onClick={e => e.stopPropagation()}>
-            <h2 className="text-xl font-bold mb-5">{editing.id ? 'Edit Coupon' : 'New Coupon'}</h2>
+          <div className="relative w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-2xl p-6 animate-slide-up" onClick={e => e.stopPropagation()}>
+            <h2 className="text-xl font-bold text-white mb-5">{editing.id ? 'Edit Coupon' : 'New Coupon'}</h2>
             <div className="space-y-3">
               <input className="input uppercase" placeholder="SAVE20" value={editing.code ?? ''} onChange={e => setEditing(p => ({...p!, code: e.target.value.toUpperCase()}))} />
               <input className="input" placeholder="Description" value={editing.description ?? ''} onChange={e => setEditing(p => ({...p!, description: e.target.value}))} />
@@ -143,8 +143,8 @@ export default function AdminCouponsPage() {
                 <input className="input" type="date" placeholder="Expires" value={editing.expires_at?.split('T')[0] ?? ''} onChange={e => setEditing(p => ({...p!, expires_at: e.target.value ? new Date(e.target.value).toISOString() : null}))} />
               </div>
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" checked={editing.is_active ?? true} onChange={e => setEditing(p => ({...p!, is_active: e.target.checked}))} className="w-4 h-4 accent-gold" />
-                <span className="text-sm">Active</span>
+                <input type="checkbox" checked={editing.is_active ?? true} onChange={e => setEditing(p => ({...p!, is_active: e.target.checked}))} className="w-4 h-4 accent-yellow-500" />
+                <span className="text-sm text-white">Active</span>
               </label>
             </div>
             <div className="flex gap-3 mt-5">
