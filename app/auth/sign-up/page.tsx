@@ -62,6 +62,7 @@ export default function SignupPage() {
   const [name, setName]         = useState('')
   const [email, setEmail]       = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading]   = useState(false)
 
   const supabase = createClient()
@@ -242,14 +243,25 @@ export default function SignupPage() {
                   Password
                   <span style={{ color: 'rgba(232,225,207,0.2)', marginLeft: '8px' }}>Min. 6 chars</span>
                 </label>
-                <input
-                  type="password"
-                  className="cc-input"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  required
-                />
+                <div className="relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    className="cc-input pr-12"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(value => !value)}
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    className="absolute right-0 top-0 h-full px-4 flex items-center justify-center transition-opacity duration-200 hover:opacity-80"
+                    style={{ color: 'rgba(232,225,207,0.55)' }}
+                  >
+                    {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+                  </button>
+                </div>
               </div>
 
               {/* Strength indicator */}
@@ -328,5 +340,25 @@ export default function SignupPage() {
         </div>
       </div>
     </>
+  )
+}
+
+function EyeIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  )
+}
+
+function EyeOffIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M3 3l18 18" />
+      <path d="M10.6 10.7a3 3 0 0 0 4.2 4.2" />
+      <path d="M9.9 5.2A11.2 11.2 0 0 1 12 5c6.5 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4.2" />
+      <path d="M6.7 6.8C4.1 8.5 2 12 2 12a17.4 17.4 0 0 0 5.5 5.6" />
+    </svg>
   )
 }

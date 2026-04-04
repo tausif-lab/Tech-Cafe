@@ -1023,29 +1023,6 @@ export default function MenuSection({
           </div>
         </div>
 
-        {/* ── ITEM CODE LABELS ROW — mirrors CAT label row ── */}
-        <div style={{ borderBottom: "2px solid rgba(232,225,207,0.15)" }}>
-          <div className="flex overflow-x-auto menu-scroll">
-            {data.items.map((item, i) => (
-              <div
-                key={item.id}
-                className="flex-shrink-0 px-5 py-3 text-[10px] tracking-[0.45em] uppercase"
-                style={{
-                  fontFamily: "'Plus Jakarta Sans', sans-serif",
-                  color: "rgba(232,225,207,0.25)",
-                  width: "clamp(160px, 16.66vw, 280px)",
-                  borderRight:
-                    i < data.items.length - 1
-                      ? "2px solid rgba(232,225,207,0.1)"
-                      : "none",
-                }}
-              >
-                {item.code}
-              </div>
-            ))}
-          </div>
-        </div>
-
         {/* ── ITEMS GRID — 3 col desktop, 2 tablet, 1 mobile ── */}
         <div
           className="grid pizza-grid"

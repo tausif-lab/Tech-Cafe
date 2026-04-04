@@ -227,6 +227,7 @@ export default function AccountPage() {
     { key: 'orders',    label: 'Orders'    },
     { key: 'settings',  label: 'Settings'  },
   ]
+  const isAdmin = ['admin', 'superadmin'].includes(profile?.role || '')
 
   return (
     <>
@@ -350,6 +351,19 @@ export default function AccountPage() {
                 >
                   {profile?.role || 'customer'}
                 </span>
+                {isAdmin && (
+                  <button
+                    onClick={() => router.push('/admin')}
+                    className="flex items-center gap-2 mt-3 px-4 py-2 text-[9px] font-bold tracking-[0.35em] uppercase transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
+                    style={{
+                      fontFamily: "'Plus Jakarta Sans', sans-serif",
+                      backgroundColor: '#D94B4B',
+                      color: '#E8E1CF',
+                    }}
+                  >
+                    Admin Dashboard
+                  </button>
+                )}
               </div>
             </div>
           </div>

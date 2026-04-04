@@ -21,7 +21,18 @@ const CARD_PALETTES = [
 ];
 
 // ── Testimonial data ───────────────────────────────────────────────────────────
-const TESTIMONIALS = [
+type ReviewCard = {
+  id: number;
+  quote: string;
+  name: string;
+  role: string;
+  initials: string;
+  code: string;
+};
+
+const REVIEW_STORAGE_KEY = "tech-cafe-reviews";
+
+const TESTIMONIALS: ReviewCard[] = [
   {
     id: 1,
     quote: "The chai here hits different after a brutal lab session. Honestly the only thing keeping us going.",
@@ -72,6 +83,17 @@ const TESTIMONIALS = [
   },
 ];
 
+function getInitials(name: string) {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return "TC";
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
+}
+
+function buildReviewCode(index: number) {
+  return `TB.${String(index + 1).padStart(2, "0")}`;
+}
+
 // ── Fan angles for the background deck cards ──────────────────────────────────
 // When card n is active, the rest fan out behind it
 function getDeckTransform(cardIndex: number, activeIndex: number, total: number) {
@@ -96,7 +118,7 @@ function getDeckTransform(cardIndex: number, activeIndex: number, total: number)
 
 // ── A single testimonial card ─────────────────────────────────────────────────
 interface CardProps {
-  testimonial: typeof TESTIMONIALS[0];
+  testimonial: ReviewCard;
   cardIndex: number;
   activeIndex: number;
   total: number;
@@ -403,7 +425,11 @@ function ArrowButton({
 }
 
 // ── Main deck stage ───────────────────────────────────────────────────────────
-function TestimonialDeck() {
+function TestimonialDeck({
+  testimonials,
+}: {
+  testimonials: ReviewCard[];
+}) {
   const [active, setActive] = useState(0);
   const [autoplay, setAutoplay] = useState(true);
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -411,20 +437,26 @@ function TestimonialDeck() {
 
   // Auto-advance when in view
   useEffect(() => {
-    if (!autoplay || !isInView) return;
+    if (!autoplay || !isInView || testimonials.length === 0) return;
     const timer = setInterval(() => {
-      setActive((prev) => (prev + 1) % TESTIMONIALS.length);
+      setActive((prev) => (prev + 1) % testimonials.length);
     }, 3800);
     return () => clearInterval(timer);
-  }, [autoplay, isInView]);
+  }, [autoplay, isInView, testimonials.length]);
+
+  useEffect(() => {
+    if (active >= testimonials.length) {
+      setActive(Math.max(testimonials.length - 1, 0));
+    }
+  }, [active, testimonials.length]);
 
   const prev = () => {
     setAutoplay(false);
-    setActive((p) => (p - 1 + TESTIMONIALS.length) % TESTIMONIALS.length);
+    setActive((p) => (p - 1 + testimonials.length) % testimonials.length);
   };
   const next = () => {
     setAutoplay(false);
-    setActive((p) => (p + 1) % TESTIMONIALS.length);
+    setActive((p) => (p + 1) % testimonials.length);
   };
 
   return (
@@ -438,13 +470,13 @@ function TestimonialDeck() {
         }}
       >
         {/* Render all cards; z-order controlled by getDeckTransform */}
-        {TESTIMONIALS.map((t, i) => (
+        {testimonials.map((t, i) => (
           <TestimonialCard
             key={t.id}
             testimonial={t}
             cardIndex={i}
             activeIndex={active}
-            total={TESTIMONIALS.length}
+            total={testimonials.length}
             onClick={() => {
               setAutoplay(false);
               setActive(i);
@@ -468,7 +500,7 @@ function TestimonialDeck() {
             textAlign: "center",
           }}
         >
-          {String(active + 1).padStart(2, "0")}&nbsp;/&nbsp;{String(TESTIMONIALS.length).padStart(2, "0")}
+          {String(active + 1).padStart(2, "0")}&nbsp;/&nbsp;{String(testimonials.length).padStart(2, "0")}
         </div>
 
         <ArrowButton direction="right" onClick={next} disabled={false} />
@@ -476,7 +508,7 @@ function TestimonialDeck() {
 
       {/* Dot indicator */}
       <DotPagination
-        total={TESTIMONIALS.length}
+        total={testimonials.length}
         active={active}
         onSelect={(i) => {
           setAutoplay(false);
@@ -488,11 +520,11 @@ function TestimonialDeck() {
 }
 
 // ── Code label row — mirrors MenuSection ──────────────────────────────────────
-function CodeLabelRow() {
+function CodeLabelRow({ testimonials }: { testimonials: ReviewCard[] }) {
   return (
     <div style={{ borderBottom: "2px solid #1F3A2E" }}>
       <div className="flex overflow-x-auto" style={{ scrollbarWidth: "none" }}>
-        {TESTIMONIALS.slice(0, 4).map((t, i) => (
+        {testimonials.slice(0, 4).map((t, i) => (
           <div
             key={t.id}
             className="flex-shrink-0 px-5 py-3 text-[10px] tracking-[0.45em] uppercase"
@@ -511,8 +543,196 @@ function CodeLabelRow() {
   );
 }
 
+function ReviewModal({
+  isOpen,
+  onClose,
+  onSubmit,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (review: { name: string; role: string; quote: string }) => void;
+}) {
+  const [name, setName] = useState("");
+  const [role, setRole] = useState("");
+  const [quote, setQuote] = useState("");
+
+  useEffect(() => {
+    if (!isOpen) {
+      setName("");
+      setRole("");
+      setQuote("");
+    }
+  }, [isOpen]);
+
+  if (!isOpen) return null;
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-50 flex items-center justify-center px-4 py-8"
+        style={{ backgroundColor: "rgba(14, 25, 20, 0.72)" }}
+        onClick={onClose}
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 24, scale: 0.96 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 16, scale: 0.98 }}
+          transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+          className="w-full max-w-xl overflow-hidden"
+          style={{
+            backgroundColor: "#E8E1CF",
+            border: "2px solid #1F3A2E",
+            boxShadow: "0 24px 60px rgba(0,0,0,0.24)",
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="px-6 py-4 flex items-center justify-between" style={{ borderBottom: "2px solid #1F3A2E" }}>
+            <div>
+              <p
+                className="text-[10px] tracking-[0.45em] uppercase"
+                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: "rgba(31,58,46,0.45)" }}
+              >
+                Tech Cafe . Review
+              </p>
+              <h3
+                className="mt-2 text-2xl font-extrabold uppercase"
+                style={{ fontFamily: "'Syne', sans-serif", color: "#1F3A2E", letterSpacing: "-0.02em" }}
+              >
+                Leave A Review
+              </h3>
+            </div>
+            <button
+              type="button"
+              onClick={onClose}
+              className="w-10 h-10 flex items-center justify-center"
+              style={{ color: "#1F3A2E" }}
+              aria-label="Close review form"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                <path d="M18 6 6 18M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              onSubmit({ name: name.trim(), role: role.trim(), quote: quote.trim() });
+            }}
+            className="p-6 space-y-4"
+          >
+            <div>
+              <label
+                className="block text-[10px] tracking-[0.35em] uppercase mb-2"
+                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: "rgba(31,58,46,0.55)" }}
+              >
+                Your Name
+              </label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Enter your name"
+                required
+                className="w-full px-4 py-3 outline-none"
+                style={{
+                  border: "1px solid rgba(31,58,46,0.18)",
+                  backgroundColor: "rgba(31,58,46,0.03)",
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  color: "#1F3A2E",
+                }}
+              />
+            </div>
+
+            <div>
+              <label
+                className="block text-[10px] tracking-[0.35em] uppercase mb-2"
+                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: "rgba(31,58,46,0.55)" }}
+              >
+                Designation Or Branch
+                <span style={{ color: "rgba(31,58,46,0.3)", marginLeft: 8 }}>Optional</span>
+              </label>
+              <input
+                type="text"
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                placeholder="CSE, 2nd Year or Student Coordinator"
+                className="w-full px-4 py-3 outline-none"
+                style={{
+                  border: "1px solid rgba(31,58,46,0.18)",
+                  backgroundColor: "rgba(31,58,46,0.03)",
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  color: "#1F3A2E",
+                }}
+              />
+            </div>
+
+            <div>
+              <label
+                className="block text-[10px] tracking-[0.35em] uppercase mb-2"
+                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: "rgba(31,58,46,0.55)" }}
+              >
+                Review
+              </label>
+              <textarea
+                value={quote}
+                onChange={(e) => setQuote(e.target.value)}
+                placeholder="Write your review here"
+                required
+                rows={5}
+                className="w-full px-4 py-3 outline-none resize-none"
+                style={{
+                  border: "1px solid rgba(31,58,46,0.18)",
+                  backgroundColor: "rgba(31,58,46,0.03)",
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  color: "#1F3A2E",
+                }}
+              />
+            </div>
+
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-5 py-2.5 text-[10px] font-semibold tracking-widest uppercase"
+                style={{
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  color: "#1F3A2E",
+                  border: "1px solid rgba(31,58,46,0.2)",
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-5 py-2.5 text-[10px] font-semibold tracking-widest uppercase"
+                style={{
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  backgroundColor: "#1F3A2E",
+                  color: "#E8E1CF",
+                }}
+              >
+                Submit Review
+              </button>
+            </div>
+          </form>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
 // ── Footer strip — mirrors MenuSection ────────────────────────────────────────
-function FooterStrip() {
+function FooterStrip({
+  onLeaveReview,
+  reviewCount,
+}: {
+  onLeaveReview: () => void;
+  reviewCount: number;
+}) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-60px 0px" });
 
@@ -526,7 +746,7 @@ function FooterStrip() {
       style={{ borderTop: "2px solid #1F3A2E" }}
     >
       <div className="flex items-center gap-6 flex-wrap">
-        {["⭐ 4.9 / 5.0 Rating", "📣 300+ Reviews", "🎓 GEC Campus"].map((tag) => (
+        {[`⭐ 4.9 / 5.0 Rating`, `📣 ${reviewCount}+ Reviews`, "🎓 GEC Campus"].map((tag) => (
           <span
             key={tag}
             className="text-[10px] tracking-[0.35em] uppercase"
@@ -541,6 +761,7 @@ function FooterStrip() {
       </div>
 
       <button
+        onClick={onLeaveReview}
         className="group flex items-center gap-2 text-[10px] font-semibold tracking-widest uppercase px-5 py-2.5 transition-all duration-200"
         style={{
           fontFamily: "'Plus Jakarta Sans', sans-serif",
@@ -575,6 +796,60 @@ function FooterStrip() {
 
 // ── Main export ───────────────────────────────────────────────────────────────
 export default function TestimonialSection() {
+  const [testimonials, setTestimonials] = useState<ReviewCard[]>(TESTIMONIALS);
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
+
+  useEffect(() => {
+    try {
+      const stored = window.localStorage.getItem(REVIEW_STORAGE_KEY);
+      if (!stored) return;
+      const parsed = JSON.parse(stored) as ReviewCard[];
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        const merged = [...parsed, ...TESTIMONIALS].map((review, index) => ({
+          ...review,
+          code: buildReviewCode(index),
+        }));
+        setTestimonials(merged);
+      }
+    } catch {
+      setTestimonials(TESTIMONIALS);
+    }
+  }, []);
+
+  const handleReviewSubmit = ({
+    name,
+    role,
+    quote,
+  }: {
+    name: string;
+    role: string;
+    quote: string;
+  }) => {
+    if (!name || !quote) return;
+
+    const customReview: ReviewCard = {
+      id: Date.now(),
+      name,
+      role: role || "Student",
+      quote,
+      initials: getInitials(name),
+      code: "",
+    };
+
+    const existingCustomReviews = testimonials.filter(
+      (review) => !TESTIMONIALS.some((seedReview) => seedReview.id === review.id),
+    );
+    const nextCustomReviews = [customReview, ...existingCustomReviews];
+    const allReviews = [...nextCustomReviews, ...TESTIMONIALS].map((review, index) => ({
+      ...review,
+      code: buildReviewCode(index),
+    }));
+
+    setTestimonials(allReviews);
+    window.localStorage.setItem(REVIEW_STORAGE_KEY, JSON.stringify(nextCustomReviews));
+    setReviewModalOpen(false);
+  };
+
   return (
     <>
       <FontLoader />
@@ -594,11 +869,19 @@ export default function TestimonialSection() {
 
         <div className="relative">
           <SectionHeader />
-          <CodeLabelRow />
-          <TestimonialDeck />
-          <FooterStrip />
+          <CodeLabelRow testimonials={testimonials} />
+          <TestimonialDeck testimonials={testimonials} />
+          <FooterStrip
+            onLeaveReview={() => setReviewModalOpen(true)}
+            reviewCount={testimonials.length}
+          />
         </div>
       </section>
+      <ReviewModal
+        isOpen={reviewModalOpen}
+        onClose={() => setReviewModalOpen(false)}
+        onSubmit={handleReviewSubmit}
+      />
     </>
   );
 }

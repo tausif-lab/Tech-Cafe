@@ -1,5 +1,6 @@
 "use client";
 import React, { useRef, useState } from "react";
+import Link from "next/link";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import MenuSection from "../components/usermenu/menu"; // adjust import path as needed in your project
 import AddToCart from "../components/usermenu/Addtocart";     // adjust path
@@ -293,40 +294,36 @@ export default function CategorySection() {
               What We<br />Serve
             </motion.h2>
 
-            {/* Right: description */}
-            <motion.p
+            {/* Right: description + home button */}
+            <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={headerInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: 0.15 }}
-              className="text-[#1F3A2E]/55 text-sm leading-relaxed max-w-[220px] self-end"
-              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+              className="self-end flex flex-col items-start gap-4"
             >
-              Six categories of campus-grade food — crafted fresh, priced right, and built for college life.
-            </motion.p>
-          </div>
-        </div>
-
-        {/* ── CHAPTER LABELS ROW ── */}
-        <div
-          className="px-0"
-          style={{ borderBottom: "2px solid #1F3A2E" }}
-        >
-          <div className="flex overflow-x-auto">
-            {CATEGORIES.map((cat, i) => (
-              <div
-                key={cat.id}
-                className="flex-shrink-0 px-5 py-3 text-[10px] tracking-[0.45em] uppercase transition-colors duration-200"
+              <p
+                className="text-[#1F3A2E]/55 text-sm leading-relaxed max-w-[220px]"
+                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+              >
+                Six categories of campus-grade food — crafted fresh, priced right, and built for college life.
+              </p>
+              <Link
+                href="/home"
+                className="inline-flex items-center gap-2 px-4 py-2.5 text-[10px] font-semibold tracking-widest uppercase transition-all duration-200 hover:bg-[#D94B4B] hover:text-[#E8E1CF]"
                 style={{
                   fontFamily: "'Plus Jakarta Sans', sans-serif",
-                  width: "clamp(240px, 28vw, 340px)",
-                  borderRight: i < CATEGORIES.length - 1 ? "2px solid #1F3A2E" : "none",
-                  color: selectedCategoryId === cat.id ? "#1F3A2E" : "#1F3A2E66",
-                  fontWeight: selectedCategoryId === cat.id ? "600" : "400",
+                  color: "#1F3A2E",
+                  border: "1px solid rgba(31,58,46,0.3)",
+                  borderRadius: "4px",
                 }}
               >
-                {cat.label}
-              </div>
-            ))}
+                Home
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M3 10.5 12 3l9 7.5" />
+                  <path d="M5 9.5V21h14V9.5" />
+                </svg>
+              </Link>
+            </motion.div>
           </div>
         </div>
 
