@@ -137,23 +137,24 @@ export async function POST(request: Request) {
     if (orderError) throw orderError
     
     // Create order items
-    const orderItems = items.map(item => ({
-      order_id: order.id,
-      cafe_id: cafeId,
-      menu_item_id: null, // Set to null since we don't have real menu items yet
-      item_name: item.name,
-      item_image_url: item.image_url,
-      item_is_veg: item.is_veg,
-      variant_id: null,
-      variant_name: null,
-      base_price: item.base_price,
-      variant_price_delta: 0,
-      add_ons: item.add_ons || [],
-      add_ons_total: item.add_ons_total || 0,
-      quantity: item.quantity,
-      unit_price: item.unit_price,
-      total_price: item.total_price
-    }))
+    // Create order items
+const orderItems = items.map(item => ({
+  order_id: order.id,
+  cafe_id: cafeId,
+  menu_item_id: item.id || null, // NOW SAVE THE ACTUAL MENU ITEM ID
+  item_name: item.name,
+  item_image_url: item.image_url,
+  item_is_veg: item.is_veg,
+  variant_id: item.variant_id || null,  // Also save variant if exists
+  variant_name: item.variant_name || null,
+  base_price: item.base_price,
+  variant_price_delta: item.variant_price_delta || 0,
+  add_ons: item.add_ons || [],
+  add_ons_total: item.add_ons_total || 0,
+  quantity: item.quantity,
+  unit_price: item.unit_price,
+  total_price: item.total_price
+}))
     
     const { error: itemsError } = await supabase
       .from('order_items')
