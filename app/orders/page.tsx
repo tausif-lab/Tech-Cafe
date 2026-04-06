@@ -32,8 +32,8 @@ export default function OrdersPage() {
         } else {
           setOrders(result.data || [])
         }
-      } catch (err: any) {
-        setError(err.message)
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : 'Failed to load orders')
       } finally {
         setLoading(false)
       }
@@ -69,9 +69,25 @@ export default function OrdersPage() {
   return (
     <div className="min-h-screen bg-black text-white p-6">
       <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">My Orders</h1>
-          <p className="text-gray-400">Track your orders and view order history</p>
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">My Orders</h1>
+            <p className="text-gray-400">Track your orders and view order history</p>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <button
+              onClick={() => router.push('/')}
+              className="px-4 py-2 bg-zinc-900 text-white rounded-lg font-semibold hover:bg-zinc-800 transition"
+            >
+              Home
+            </button>
+            <button
+              onClick={() => router.push('/Accountpage')}
+              className="px-4 py-2 bg-white text-black rounded-lg font-semibold hover:bg-gray-200 transition"
+            >
+              Profile
+            </button>
+          </div>
         </div>
         
         {orders.length === 0 ? (

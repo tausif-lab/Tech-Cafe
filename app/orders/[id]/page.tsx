@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import type { Order, OrderStatus } from '@/types'
-import { Clock, CheckCircle, Package, Utensils, XCircle } from 'lucide-react'
+import { Clock, CheckCircle, Package, Utensils, XCircle, type LucideIcon } from 'lucide-react'
 
-const statusConfig: Record<OrderStatus, { label: string; icon: any; color: string }> = {
+const statusConfig: Record<OrderStatus, { label: string; icon: LucideIcon; color: string }> = {
   pending: { label: 'Order Placed', icon: Clock, color: 'text-yellow-500' },
   confirmed: { label: 'Confirmed by Cafe', icon: CheckCircle, color: 'text-green-500' },
   preparing: { label: 'Being Prepared', icon: Utensils, color: 'text-blue-500' },
@@ -39,8 +39,8 @@ export default function OrderTrackingPage() {
         } else {
           setOrder(result.data)
         }
-      } catch (err: any) {
-        setError(err.message)
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : 'Failed to load order')
       } finally {
         setLoading(false)
       }
@@ -105,12 +105,20 @@ export default function OrderTrackingPage() {
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <button
-            onClick={() => router.push('/orders')}
-            className="text-gray-400 hover:text-white mb-4"
-          >
-            ← Back to Orders
-          </button>
+          <div className="flex flex-wrap items-center gap-4 mb-4">
+            <button
+              onClick={() => router.push('/orders')}
+              className="text-gray-400 hover:text-white"
+            >
+              ← Back to Orders
+            </button>
+            <button
+              onClick={() => router.push('/')}
+              className="text-gray-400 hover:text-white"
+            >
+              Home
+            </button>
+          </div>
           <h1 className="text-3xl font-bold mb-2">Order #{order.order_number}</h1>
           <p className="text-gray-400">
             Placed on {new Date(order.created_at).toLocaleString()}
