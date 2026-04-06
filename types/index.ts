@@ -208,6 +208,7 @@ export interface Order {
   // joined
   order_items?: OrderItem[]
   cafe?: Cafe
+  order_type?: string        // ADD THIS LINE
 }
 
 // ─── Order Item ───────────────────────────────────────────────

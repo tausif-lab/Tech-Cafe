@@ -12,39 +12,57 @@ async function getStats(cafeId: string) {
     1,
   ).toISOString();
 
-  const [todayOrders, monthOrders, pending] = await Promise.all([
+  const [allTodayOrders, allMonthOrders, pending] = await Promise.all([
+    // ALL today's orders (paid + cash)
     supabase
       .from("orders")
-      .select("total_amount, status")
+      .select("total_amount, status, payment_status")
       .eq("cafe_id", cafeId)
       .gte("created_at", today)
-      .eq("payment_status", "paid"),
+      .not("status", "in", "(cancelled,refunded)"),  // Exclude cancelled/refunded
+    
+    // ALL month's orders (paid + cash)
     supabase
       .from("orders")
-      .select("total_amount")
+      .select("total_amount, status, payment_status")
       .eq("cafe_id", cafeId)
       .gte("created_at", monthStart)
-      .eq("payment_status", "paid"),
+      .not("status", "in", "(cancelled,refunded)"),
+    
+    // Active orders
     supabase
       .from("orders")
       .select("id", { count: "exact", head: true })
       .eq("cafe_id", cafeId)
-      .in("status", ["pending", "confirmed", "preparing"]),
+      .in("status", ["pending", "confirmed", "preparing", "ready" , "completed"]),
   ]);
 
+  // Separate paid vs pending revenue
+  const todayPaidRevenue = allTodayOrders.data
+    ?.filter((o: any) => o.payment_status === "completed")
+    .reduce((s: number, o: any) => s + Number(o.total_amount), 0) ?? 0;
+
+  const todayPendingRevenue = allTodayOrders.data
+    ?.filter((o: any) => o.payment_status === "pending")
+    .reduce((s: number, o: any) => s + Number(o.total_amount), 0) ?? 0;
+
+  const totalTodayRevenue = todayPaidRevenue + todayPendingRevenue;
+
+  const completedToday = allTodayOrders.data?.filter(
+    (o: any) => o.status === "completed"
+  ).length ?? 0;
+
   return {
-    today_orders: todayOrders.data?.length ?? 0,
-    today_revenue:
-      todayOrders.data?.reduce(
-        (s: number, o: any) => s + Number(o.total_amount),
-        0,
-      ) ?? 0,
-    month_orders: monthOrders.data?.length ?? 0,
-    month_revenue:
-      monthOrders.data?.reduce(
-        (s: number, o: any) => s + Number(o.total_amount),
-        0,
-      ) ?? 0,
+    today_orders: allTodayOrders.data?.length ?? 0,
+    today_revenue: totalTodayRevenue,
+    today_paid_revenue: todayPaidRevenue,
+    today_pending_revenue: todayPendingRevenue,
+    completed_today: completedToday,
+    month_orders: allMonthOrders.data?.length ?? 0,
+    month_revenue: allMonthOrders.data?.reduce(
+      (s: number, o: any) => s + Number(o.total_amount),
+      0,
+    ) ?? 0,
     pending_orders: pending.count ?? 0,
   };
 }
@@ -63,31 +81,31 @@ export default async function AdminDashboard() {
   const stats = await getStats(profile!.cafe_id!);
 
   const STATS = [
-    {
-      label: "Today's Orders",
-      value: stats.today_orders,
-      icon: ShoppingBag,
-      sub: "orders placed",
-    },
-    {
-      label: "Today's Revenue",
-      value: formatCurrency(stats.today_revenue),
-      icon: TrendingUp,
-      sub: "earned today",
-    },
-    {
-      label: "Active Orders",
-      value: stats.pending_orders,
-      icon: Clock,
-      sub: "need attention",
-    },
-    {
-      label: "Month's Revenue",
-      value: formatCurrency(stats.month_revenue),
-      icon: CheckCircle,
-      sub: `${stats.month_orders} orders`,
-    },
-  ];
+  {
+    label: "Today's Orders",
+    value: stats.today_orders,
+    icon: ShoppingBag,
+    sub: `${stats.completed_today} completed`,
+  },
+  {
+    label: "Today's Revenue",
+    value: formatCurrency(stats.today_revenue),
+    icon: TrendingUp,
+    sub: `₹${stats.today_pending_revenue.toFixed(0)} completed`,
+  },
+  {
+    label: "Active Orders",
+    value: stats.pending_orders,
+    icon: Clock,
+    sub: "need attention",
+  },
+  {
+    label: "Month's Revenue",
+    value: formatCurrency(stats.month_revenue),
+    icon: CheckCircle,
+    sub: `${stats.month_orders} orders`,
+  },
+];
 
   return (
     <div className="text-white">
