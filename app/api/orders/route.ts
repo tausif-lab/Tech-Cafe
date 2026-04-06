@@ -174,6 +174,20 @@ const orderItems = items.map(item => ({
         p_slot_date: slotDate 
       })
     }
+
+    // ── Fire push notification (fire-and-forget, never blocks order response) ──
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+    fetch(`${appUrl}/api/notifications/send`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        orderId:     order.id,
+        cafeId:      cafeId,
+        orderNumber: order.order_number,
+      }),
+    }).catch((err) =>
+      console.error('[Orders] Failed to send push notification:', err)
+    )
     
     return NextResponse.json({ 
       data: { 

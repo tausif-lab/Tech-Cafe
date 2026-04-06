@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import AdminSidebar from "@/app/components/admin/AdminSidebar";
+import FCMProvider from "@/app/components/admin/FCMProvider";
 
 export default async function AdminLayout({
   children,
@@ -26,6 +27,7 @@ export default async function AdminLayout({
   return (
     <div className="min-h-screen bg-black flex">
       <AdminSidebar />
+      <FCMProvider />
       <main className="flex-1 ml-64 p-8 overflow-auto">{children}</main>
     </div>
   );
