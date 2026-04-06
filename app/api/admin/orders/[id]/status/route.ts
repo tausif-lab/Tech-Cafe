@@ -1,6 +1,17 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import type { OrderStatus } from '@/types'
+import type { NotificationType, OrderStatus } from '@/types'
+
+type OrderStatusUpdate = {
+  status: OrderStatus
+  rejectionReason?: string
+}
+
+type OrderUpdateData = {
+  status: OrderStatus
+  rejection_reason?: string
+  estimated_ready_at?: string
+}
 
 export async function PATCH(
   request: Request,
@@ -26,13 +37,13 @@ export async function PATCH(
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
     
-    const { status, rejectionReason }: { status: OrderStatus; rejectionReason?: string } = await request.json()
+    const { status, rejectionReason }: OrderStatusUpdate = await request.json()
     
     if (!status) {
       return NextResponse.json({ error: 'Status required' }, { status: 400 })
     }
     
-    const updateData: any = { status }
+    const updateData: OrderUpdateData = { status }
     
     if (status === 'cancelled' && rejectionReason) {
       updateData.rejection_reason = rejectionReason
@@ -53,7 +64,7 @@ export async function PATCH(
     if (error) throw error
     
     // Create notification for user
-    const notificationTypes: Record<OrderStatus, string> = {
+    const notificationTypes: Record<OrderStatus, NotificationType | ''> = {
       confirmed: 'order_confirmed',
       preparing: 'order_preparing',
       ready: 'order_ready',
@@ -94,8 +105,9 @@ export async function PATCH(
     }
     
     return NextResponse.json({ data, error: null })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Order status update error:', error)
-    return NextResponse.json({ data: null, error: error.message }, { status: 500 })
+    const message = error instanceof Error ? error.message : 'Failed to update order status'
+    return NextResponse.json({ data: null, error: message }, { status: 500 })
   }
 }

@@ -17,10 +17,21 @@ type Profile = {
 
 type Order = {
   id: string
+  order_number: string
   created_at: string
-  total: number
+  total_amount: number
   status: string
-  items_count: number
+  order_items: OrderHistoryItem[]
+}
+
+type OrderHistoryItem = {
+  id: string
+  item_name: string
+  variant_name: string | null
+  add_ons: { name: string; price: number }[] | null
+  quantity: number
+  unit_price: number
+  total_price: number
 }
 
 // ── Font & style loader ───────────────────────────────────────────────────────
@@ -107,6 +118,7 @@ const FontLoader = () => (
 function statusColor(status: string) {
   switch (status?.toLowerCase()) {
     case 'delivered': return { color: '#4CAF50', border: 'rgba(76,175,80,0.35)' }
+    case 'completed': return { color: '#4CAF50', border: 'rgba(76,175,80,0.35)' }
     case 'pending':   return { color: '#FFC107', border: 'rgba(255,193,7,0.35)'  }
     case 'cancelled': return { color: '#D94B4B', border: 'rgba(217,75,75,0.35)'  }
     default:          return { color: 'rgba(232,225,207,0.4)', border: 'rgba(232,225,207,0.2)' }
@@ -156,11 +168,26 @@ export default function AccountPage() {
       try {
         const { data: ords } = await supabase
           .from('orders')
-          .select('id, created_at, total, status, items_count')
+          .select(`
+            id,
+            order_number,
+            created_at,
+            total_amount,
+            status,
+            order_items (
+              id,
+              item_name,
+              variant_name,
+              add_ons,
+              quantity,
+              unit_price,
+              total_price
+            )
+          `)
           .eq('user_id', user.id)
           .order('created_at', { ascending: false })
           .limit(10)
-        setOrders(ords || [])
+        setOrders((ords || []) as Order[])
       } catch {
         setOrders([])
       }
@@ -270,6 +297,13 @@ export default function AccountPage() {
             </span>
           </Link>
           <div className="flex items-center gap-4">
+            <Link
+              href="/"
+              className="text-[9px] tracking-[0.45em] uppercase transition-colors duration-200"
+              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: 'rgba(232,225,207,0.35)' }}
+            >
+              Home
+            </Link>
             <Link
               href="/categorysection"
               className="text-[9px] tracking-[0.45em] uppercase transition-colors duration-200"
@@ -405,7 +439,7 @@ export default function AccountPage() {
                   { label: 'Pending',      value: orders.filter(o => o.status === 'pending').length.toString() },
                   {
                     label: 'Total Spent',
-                    value: '₹' + orders.reduce((s, o) => s + (o.total || 0), 0).toFixed(0),
+                    value: '₹' + orders.reduce((s, o) => s + (o.total_amount || 0), 0).toFixed(0),
                   },
                 ].map(stat => (
                   <div key={stat.label} className="acct-panel">
@@ -707,47 +741,48 @@ function OrderRow({ order, isLast }: { order: Order; isLast: boolean }) {
   const date = new Date(order.created_at).toLocaleDateString('en-IN', {
     day: '2-digit', month: 'short', year: 'numeric',
   })
+  const totalItems = order.order_items.reduce((sum, item) => sum + item.quantity, 0)
 
   return (
     <div
-      className="px-6 py-4 flex items-center justify-between gap-4 flex-wrap transition-colors duration-200 hover:bg-[rgba(232,225,207,0.03)]"
+      className="px-6 py-4 transition-colors duration-200 hover:bg-[rgba(232,225,207,0.03)]"
       style={{ borderBottom: isLast ? 'none' : '1px solid rgba(232,225,207,0.08)' }}
     >
-      <div className="flex items-center gap-4">
-        {/* Order ID */}
-        <div>
-          <p
-            className="text-[9px] tracking-[0.4em] uppercase mb-0.5"
-            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: 'rgba(232,225,207,0.25)' }}
-          >
-            Order
-          </p>
-          <p
-            className="font-bold text-xs"
-            style={{ fontFamily: "'Syne', sans-serif", color: '#E8E1CF' }}
-          >
-            #{order.id.slice(-6).toUpperCase()}
-          </p>
-        </div>
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <div className="flex items-center gap-4">
+          {/* Order ID */}
+          <div>
+            <p
+              className="text-[9px] tracking-[0.4em] uppercase mb-0.5"
+              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: 'rgba(232,225,207,0.25)' }}
+            >
+              Order
+            </p>
+            <p
+              className="font-bold text-xs"
+              style={{ fontFamily: "'Syne', sans-serif", color: '#E8E1CF' }}
+            >
+              #{order.order_number || order.id.slice(-6).toUpperCase()}
+            </p>
+          </div>
 
-        {/* Date */}
-        <div className="hidden md:block">
-          <p
-            className="text-[9px] tracking-[0.4em] uppercase mb-0.5"
-            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: 'rgba(232,225,207,0.25)' }}
-          >
-            Date
-          </p>
-          <p
-            className="text-xs"
-            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: 'rgba(232,225,207,0.6)' }}
-          >
-            {date}
-          </p>
-        </div>
+          {/* Date */}
+          <div className="hidden md:block">
+            <p
+              className="text-[9px] tracking-[0.4em] uppercase mb-0.5"
+              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: 'rgba(232,225,207,0.25)' }}
+            >
+              Date
+            </p>
+            <p
+              className="text-xs"
+              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: 'rgba(232,225,207,0.6)' }}
+            >
+              {date}
+            </p>
+          </div>
 
-        {/* Items */}
-        {order.items_count != null && (
+          {/* Items */}
           <div className="hidden md:block">
             <p
               className="text-[9px] tracking-[0.4em] uppercase mb-0.5"
@@ -759,32 +794,75 @@ function OrderRow({ order, isLast }: { order: Order; isLast: boolean }) {
               className="text-xs"
               style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: 'rgba(232,225,207,0.6)' }}
             >
-              {order.items_count}
+              {totalItems}
             </p>
           </div>
-        )}
+        </div>
+
+        <div className="flex items-center gap-4">
+          {/* Total */}
+          <p
+            className="font-bold"
+            style={{ fontFamily: "'Syne', sans-serif", fontSize: '1rem', color: '#E8E1CF' }}
+          >
+            ₹{(order.total_amount || 0).toFixed(0)}
+          </p>
+
+          {/* Status pill */}
+          <span
+            className="status-pill"
+            style={{ color, border: `1px solid ${border}` }}
+          >
+            <span
+              className="w-1.5 h-1.5 rounded-full inline-block"
+              style={{ backgroundColor: color }}
+            />
+            {order.status || 'processing'}
+          </span>
+        </div>
       </div>
 
-      <div className="flex items-center gap-4">
-        {/* Total */}
-        <p
-          className="font-bold"
-          style={{ fontFamily: "'Syne', sans-serif", fontSize: '1rem', color: '#E8E1CF' }}
-        >
-          ₹{(order.total || 0).toFixed(0)}
-        </p>
-
-        {/* Status pill */}
-        <span
-          className="status-pill"
-          style={{ color, border: `1px solid ${border}` }}
-        >
-          <span
-            className="w-1.5 h-1.5 rounded-full inline-block"
-            style={{ backgroundColor: color }}
-          />
-          {order.status || 'processing'}
-        </span>
+      <div
+        className="mt-4 pt-4 space-y-3"
+        style={{ borderTop: '1px solid rgba(232,225,207,0.08)' }}
+      >
+        {order.order_items.length === 0 ? (
+          <p
+            className="text-[9px] tracking-[0.35em] uppercase"
+            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: 'rgba(232,225,207,0.25)' }}
+          >
+            No item history available
+          </p>
+        ) : (
+          order.order_items.map(item => (
+            <div key={item.id} className="flex items-start justify-between gap-4">
+              <div>
+                <p
+                  className="text-sm font-bold"
+                  style={{ fontFamily: "'Syne', sans-serif", color: '#E8E1CF' }}
+                >
+                  {item.quantity} × {item.item_name}
+                </p>
+                <p
+                  className="mt-1 text-[10px]"
+                  style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: 'rgba(232,225,207,0.45)' }}
+                >
+                  {[
+                    item.variant_name,
+                    item.add_ons?.length ? `Add-ons: ${item.add_ons.map(addOn => addOn.name).join(', ')}` : null,
+                    `₹${item.unit_price} each`,
+                  ].filter(Boolean).join(' • ')}
+                </p>
+              </div>
+              <p
+                className="text-sm font-bold whitespace-nowrap"
+                style={{ fontFamily: "'Syne', sans-serif", color: '#E8E1CF' }}
+              >
+                ₹{item.total_price}
+              </p>
+            </div>
+          ))
+        )}
       </div>
     </div>
   )

@@ -128,6 +128,7 @@ const router = useRouter();
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import type { User } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
 import { useCart } from "../usermenu/Cartcontext";
 
@@ -140,7 +141,7 @@ const FontLoader = () => (
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const { totalItems } = useCart();
   const router = useRouter();
   const supabase = createClient();
@@ -242,6 +243,30 @@ export default function Navbar() {
 
           {/* Right: nav links + CTA */}
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => router.push('/orders')}
+              className="p-2 transition-all duration-200 hover:scale-110"
+              aria-label="Orders"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke={isScrolled ? "#1F3A2E" : "#E8E1CF"}
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M9 6h11" />
+                <path d="M9 12h11" />
+                <path d="M9 18h11" />
+                <path d="M5 6h.01" />
+                <path d="M5 12h.01" />
+                <path d="M5 18h.01" />
+              </svg>
+            </button>
+
             {/* Cart button - always visible */}
             <button
               onClick={() => router.push('/billing')}
@@ -366,6 +391,21 @@ export default function Navbar() {
             }}
           >
             <div className="px-6 py-4 space-y-3">
+              <button
+                onClick={() => {
+                  router.push('/orders');
+                  setMenuOpen(false);
+                }}
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 text-[10px] font-bold tracking-widest uppercase transition-all duration-200"
+                style={{
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  color: isScrolled ? "#1F3A2E" : "#E8E1CF",
+                  border: "1px solid rgba(232,225,207,0.18)",
+                  borderRadius: "4px",
+                }}
+              >
+                Orders
+              </button>
               {user ? (
                 <button
                   onClick={() => {
