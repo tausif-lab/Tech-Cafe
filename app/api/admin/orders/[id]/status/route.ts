@@ -1,7 +1,6 @@
-import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
-import type { OrderStatus } from "@/types";
-import { sendOrderReadyEmail } from "@/lib/email";
+import { NextResponse } from 'next/server'
+import { createClient } from '@/lib/supabase/server'
+import type { OrderStatus } from '@/types'
 
 export async function PATCH(
   request: Request,
@@ -29,64 +28,21 @@ export async function PATCH(
     if (!profile || !["admin", "superadmin"].includes(profile.role)) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
-
-    const {
-      status,
-      rejectionReason,
-    }: { status: OrderStatus; rejectionReason?: string } = await request.json();
-
+    
+    const { status, rejectionReason }: { status: OrderStatus; rejectionReason?: string } = await request.json()
+    
     if (!status) {
       return NextResponse.json({ error: "Status required" }, { status: 400 });
     }
-
-    const updateData: any = { status };
-
-    if (status === "cancelled" && rejectionReason) {
-      updateData.rejection_reason = rejectionReason;
+    
+    const updateData: any = { status }
+    
+    if (status === 'cancelled' && rejectionReason) {
+      updateData.rejection_reason = rejectionReason
     }
-
-    // Send email when order is ready
-    if (status === "ready") {
-      // Fetch order details with user email
-      const { data: orderDetails } = await supabase
-        .from("orders")
-        .select(
-          `
-          order_number,
-          slot_date,
-          slot_time,
-          user_id,
-          cafes!inner(name)
-        `,
-        )
-        .eq("id", id)
-        .single();
-
-      if (orderDetails) {
-        // Fetch user from auth.users to get email
-        const {
-          data: { user: orderUser },
-        } = await supabase.auth.admin.getUserById(orderDetails.user_id);
-
-        if (orderUser?.email) {
-          const result = await sendOrderReadyEmail(
-            orderUser.email,
-            orderUser.user_metadata?.full_name || orderUser.email.split("@")[0],
-            orderDetails.order_number,
-            orderDetails.slot_time || "ASAP",
-            orderDetails.slot_date
-              ? new Date(orderDetails.slot_date).toLocaleDateString("en-IN")
-              : "Today",
-            (Array.isArray(orderDetails.cafes) &&
-              orderDetails.cafes[0]?.name) ||
-              "Tech Cafe",
-          );
-
-          if (!result.success) {
-            console.error("Resend failed:", result.error);
-          }
-        }
-      }
+    
+    if (status === 'ready') {
+      updateData.estimated_ready_at = new Date().toISOString()
     }
 
     const { data, error } = await supabase
@@ -101,17 +57,17 @@ export async function PATCH(
 
     // Create notification for user
     const notificationTypes: Record<OrderStatus, string> = {
-      confirmed: "order_confirmed",
-      preparing: "order_preparing",
-      ready: "order_ready",
-      cancelled: "order_cancelled",
-      refunded: "order_refunded",
-      pending: "",
-      completed: "",
-    };
-
-    const notificationType = notificationTypes[status];
-
+      confirmed: 'order_confirmed',
+      preparing: 'order_preparing',
+      ready: 'order_ready',
+      cancelled: 'order_cancelled',
+      refunded: 'order_refunded',
+      pending: '',
+      completed: ''
+    }
+    
+    const notificationType = notificationTypes[status]
+    
     if (notificationType) {
       const notificationTitles: Record<string, string> = {
         order_confirmed: "Order Confirmed!",
@@ -139,13 +95,10 @@ export async function PATCH(
         data: { order_id: data.id, order_number: data.order_number },
       });
     }
-
-    return NextResponse.json({ data, error: null });
+    
+    return NextResponse.json({ data, error: null })
   } catch (error: any) {
-    console.error("Order status update error:", error);
-    return NextResponse.json(
-      { data: null, error: error.message },
-      { status: 500 },
-    );
+    console.error('Order status update error:', error)
+    return NextResponse.json({ data: null, error: error.message }, { status: 500 })
   }
 }

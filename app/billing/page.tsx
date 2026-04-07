@@ -1,6 +1,6 @@
 "use client";
 import React, { useRef, useState } from "react";
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useCart } from "@/app/components/usermenu/Cartcontext";
 import { useRouter } from "next/navigation";
 
@@ -154,7 +154,13 @@ function PaymentSelector({
 }
 
 // ── Success overlay ───────────────────────────────────────────────────────────
-function SuccessOverlay({ onDone }: { onDone: () => void }) {
+function SuccessOverlay({
+  onTrackOrder,
+  onHome,
+}: {
+  onTrackOrder: () => void;
+  onHome: () => void;
+}) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -202,21 +208,38 @@ function SuccessOverlay({ onDone }: { onDone: () => void }) {
             Your food is being prepared. Ready in ~12 min at the counter. 🎉
           </p>
         </motion.div>
-        <motion.button
+        <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, delay: 0.4 }}
-          onClick={onDone}
-          className="mt-4 px-8 py-3 text-[10px] font-bold tracking-widest uppercase"
-          style={{
-            fontFamily: "'Plus Jakarta Sans', sans-serif",
-            backgroundColor: "#D94B4B",
-            color: "#E8E1CF",
-            borderRadius: "2px",
-          }}
+          className="mt-4 flex flex-col sm:flex-row items-center gap-3"
         >
-          Back to Menu
-        </motion.button>
+          <button
+            onClick={onTrackOrder}
+            className="px-8 py-3 text-[10px] font-bold tracking-widest uppercase"
+            style={{
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              backgroundColor: "#D94B4B",
+              color: "#E8E1CF",
+              borderRadius: "2px",
+            }}
+          >
+            Track Order
+          </button>
+          <button
+            onClick={onHome}
+            className="px-8 py-3 text-[10px] font-bold tracking-widest uppercase"
+            style={{
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              backgroundColor: "transparent",
+              color: "#E8E1CF",
+              border: "1px solid rgba(232,225,207,0.35)",
+              borderRadius: "2px",
+            }}
+          >
+            Home
+          </button>
+        </motion.div>
       </div>
     </motion.div>
   );
@@ -359,19 +382,25 @@ export default function BillingPage() {
       
       ═══════════════════════════════════════════════════════════ */
       
-    } catch (error: any) {
-      alert('Error placing order: ' + error.message);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      alert('Error placing order: ' + message);
       setLoading(false);
     }
   };
 
-  const handleDone = () => {
+  const handleTrackOrder = () => {
     clearCart();
     if (orderId) {
       router.push(`/orders/${orderId}`);
     } else {
       router.push('/orders');
     }
+  };
+
+  const handleHome = () => {
+    clearCart();
+    router.push('/');
   };
 
   if (items.length === 0 && !orderPlaced) {
@@ -413,7 +442,7 @@ export default function BillingPage() {
     <>
       <FontLoader />
 
-      {orderPlaced && <SuccessOverlay onDone={handleDone} />}
+      {orderPlaced && <SuccessOverlay onTrackOrder={handleTrackOrder} onHome={handleHome} />}
 
       <section
         className="relative min-h-screen overflow-hidden"
