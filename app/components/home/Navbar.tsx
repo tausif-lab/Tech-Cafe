@@ -215,7 +215,7 @@ export default function Navbar() {
                 color: isScrolled ? "#1F3A2E" : "#E8E1CF",
               }}
             >
-              Clever
+              Co
             </span>
             <span
               className="font-extrabold uppercase leading-none"
@@ -226,7 +226,7 @@ export default function Navbar() {
                 color: "#D94B4B",
               }}
             >
-              Codex
+              webd
             </span>
             <span
               className="font-extrabold leading-none"
