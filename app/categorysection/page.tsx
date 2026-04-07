@@ -167,6 +167,7 @@ function CategoryPanel({
   return (
     <motion.div
       initial={{ y: 40, opacity: 0 }}
+      
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, delay: index * 0.07, ease: [0.22, 1, 0.36, 1] }}
       onMouseEnter={() => setHovered(true)}
