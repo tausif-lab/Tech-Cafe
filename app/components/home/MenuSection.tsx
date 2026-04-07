@@ -38,7 +38,7 @@ const MENU_ITEMS = [
     name: "Cheese Corn Sandwich",
     code: "SW.02",
     label: "Cafe Classic",
-    price: "₹180",
+    price: "₹60",
     tag: "veg",
     emoji: "🥪",
     img: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=700&q=85",
@@ -95,6 +95,21 @@ const MENU_ITEMS = [
     toppings:["Peri Peri Sauce", "Herbs", "Lime"],
     spice:3,
     },
+    {
+  id: 200,
+  code: "LS.01",
+  name: "Lassi",
+  label: "refreshing",
+  price: "₹40",
+  tag: "veg",
+  emoji: "🥛",
+  img: "/lassi.jpeg",
+  description: "Chilled creamy yogurt drink blended with sugar and cardamom, topped with a light froth for a refreshing experience.",
+  calories: "180 kcal",
+  time: "3 min",
+  toppings: ["Curd", "Sugar", "Cardamom"],
+  spice: 0,
+}
     
 ];
 

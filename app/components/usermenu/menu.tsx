@@ -119,6 +119,7 @@ const MENU_DATA: Record<
     toppings: ["Paneer", "Cheese"],
   }
 ],
+
   },
 
   // ── 2. Burger ────────────────────────────────────────────────────────────
@@ -1034,10 +1035,23 @@ const MENU_DATA: Record<
     img: "/cheese-roll.png",
     description: "Soft roll filled with molten cheese and mild spices.",
     toppings: ["Cheese"],
-  }
-],
+  },
+  {
+  id: 200,
+  code: "LS.01",
+  name: "Lassi",
+  price: "₹40",
+  tag: "refreshing",
+  veg: true,
+  img: "/lassi.jpeg",
+  spice: 0,
+  description: "Chilled creamy yogurt drink blended with sugar and cardamom, topped with a light froth for a refreshing experience.",
+  toppings: ["Curd", "Sugar", "Cardamom"],
 }
+],
+},
 };
+
 
 // ── Spice indicator ───────────────────────────────────────────────────────────
 function SpiceLevel({ level }: { level: number }) {
