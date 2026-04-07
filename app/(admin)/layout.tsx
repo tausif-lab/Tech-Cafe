@@ -28,7 +28,7 @@ export default async function AdminLayout({
     <div className="min-h-screen bg-black flex">
       <AdminSidebar />
       <FCMProvider />
-      <main className="flex-1 ml-64 p-8 overflow-auto">{children}</main>
+      <main className="flex-1 md:ml-64 pt-20 md:pt-8 p-4 md:p-8 overflow-auto">{children}</main>
     </div>
   );
 }
