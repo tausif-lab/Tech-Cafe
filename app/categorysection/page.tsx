@@ -73,14 +73,80 @@ const CATEGORIES = [
   {
     id: 6,
     label: "CAT.6",
-    name: "Mojito",
+    name: "Shakes",
     emoji: "🍹",
-    img: "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=500&q=80",
+    img: "/Cold Coffee.jpeg",
     description:
       "Virgin, fresh-mint, ice-cold. The ultimate cool-down after a packed day — sip slow, vibe harder. Your post-class ritual.",
     items: "5 varieties",
     topPick: "Classic Mint",
   },
+  {
+  id: 7,
+  label: "CAT.7",
+  name: "Chowmein",
+  emoji: "🍜",
+  img: "https://images.unsplash.com/photo-1585032226651-759b368d7246?w=500&q=80",
+  description:
+    "Wok-tossed noodles packed with bold sauces and crunchy veggies. Street-style flavors that never miss.",
+  items: "4 varieties",
+  topPick: "Paneer Chowmein",
+},
+{
+  id: 8,
+  label: "CAT.8",
+  name: "Chinese",
+  emoji: "🥡",
+  img: "https://images.unsplash.com/photo-1604909052743-94e838986d24?w=500&q=80",
+  description:
+    "Bold Indo-Chinese flavors with crispy textures and spicy gravies — perfect for a full meal or snack.",
+  items: "8 varieties",
+  topPick: "Paneer Chilli",
+},
+{
+  id: 9,
+  label: "CAT.9",
+  name: "Maggi",
+  emoji: "🍜",
+  img: "/peri-peri-maggi.png",
+  description:
+    "Hot, spicy, and instantly satisfying. From classic masala to cheesy and peri-peri twists — your go-to comfort bowl anytime.",
+  items: "7 varieties",
+  topPick: "Cheese Veg Maggi",
+},
+{
+  id: 10,
+  label: "CAT.10",
+  name: "French Fries",
+  emoji: "🍟",
+  img: "https://images.unsplash.com/photo-1576107232684-1279f390859f?w=500&q=80",
+  description:
+    "Golden crispy fries with classic, cheesy, and spicy twists — the perfect side or anytime snack.",
+  items: "4 varieties",
+  topPick: "Peri Cheese Fries",
+},{
+  id: 11,
+  label: "CAT.11",
+  name: "Fried Rice",
+  emoji: "🍚",
+  img: "https://images.unsplash.com/photo-1604908177522-4295f5f31b5b?w=500&q=80",
+  description:
+    "Fluffy rice stir-fried with sauces and veggies — simple, filling, and full of flavor.",
+  items: "2 varieties",
+  topPick: "Schezwan Fried Rice",
+},
+{
+  id: 12,
+  label: "CAT.12",
+  name: "Tech Cafe Special",
+  emoji: "🌯",
+  img: "https://images.unsplash.com/photo-1606755962773-d324e0a13086?w=500&q=80",
+  description:
+    "Crispy rolls loaded with signature fillings and sauces — quick bites made for college cravings.",
+  items: "2 varieties",
+  topPick: "Cheese Loaded Roll",
+}
+
 ];
 
 // ── Category Panel ────────────────────────────────────────────────────────────

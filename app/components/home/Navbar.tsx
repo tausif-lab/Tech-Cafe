@@ -140,7 +140,6 @@ const FontLoader = () => (
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const { totalItems } = useCart();
   const router = useRouter();
@@ -346,112 +345,8 @@ export default function Navbar() {
                 </svg>
               </button>
             )}
-
-            {/* Hamburger menu for mobile */}
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden flex flex-col gap-1.5 p-2"
-              aria-label="Toggle menu"
-            >
-              <span
-                className="w-5 h-0.5 transition-all duration-300"
-                style={{
-                  backgroundColor: isScrolled ? "#1F3A2E" : "#E8E1CF",
-                  transform: menuOpen ? "rotate(45deg) translateY(6px)" : "none",
-                }}
-              />
-              <span
-                className="w-5 h-0.5 transition-all duration-300"
-                style={{
-                  backgroundColor: isScrolled ? "#1F3A2E" : "#E8E1CF",
-                  opacity: menuOpen ? 0 : 1,
-                }}
-              />
-              <span
-                className="w-5 h-0.5 transition-all duration-300"
-                style={{
-                  backgroundColor: isScrolled ? "#1F3A2E" : "#E8E1CF",
-                  transform: menuOpen ? "rotate(-45deg) translateY(-6px)" : "none",
-                }}
-              />
-            </button>
           </div>
         </div>
-
-        {/* Mobile dropdown menu */}
-        {menuOpen && (
-          <div
-            className="md:hidden absolute top-full left-0 w-full transition-all duration-300"
-            style={{
-              backgroundColor: isScrolled
-                ? "rgba(232,225,207,0.97)"
-                : "rgba(31,58,46,0.95)",
-              backdropFilter: "blur(12px)",
-              borderBottom: "1px solid rgba(31,58,46,0.12)",
-            }}
-          >
-            <div className="px-6 py-4 space-y-3">
-              <button
-                onClick={() => {
-                  router.push('/orders');
-                  setMenuOpen(false);
-                }}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 text-[10px] font-bold tracking-widest uppercase transition-all duration-200"
-                style={{
-                  fontFamily: "'Plus Jakarta Sans', sans-serif",
-                  color: isScrolled ? "#1F3A2E" : "#E8E1CF",
-                  border: "1px solid rgba(232,225,207,0.18)",
-                  borderRadius: "4px",
-                }}
-              >
-                Orders
-              </button>
-              {user ? (
-                <button
-                  onClick={() => {
-                    router.push('/Accountpage');
-                    setMenuOpen(false);
-                  }}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 text-[10px] font-bold tracking-widest uppercase transition-all duration-200"
-                  style={{
-                    fontFamily: "'Plus Jakarta Sans', sans-serif",
-                    backgroundColor: "#D94B4B",
-                    color: "#E8E1CF",
-                    borderRadius: "4px",
-                  }}
-                >
-                  My Account
-                </button>
-              ) : (
-                <button
-                  onClick={() => {
-                    router.push('/auth/login');
-                    setMenuOpen(false);
-                  }}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 text-[10px] font-bold tracking-widest uppercase transition-all duration-200"
-                  style={{
-                    fontFamily: "'Plus Jakarta Sans', sans-serif",
-                    backgroundColor: "#D94B4B",
-                    color: "#E8E1CF",
-                    borderRadius: "4px",
-                  }}
-                >
-                  Login
-                  <svg
-                    width="10"
-                    height="10"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                  >
-                    <path d="M5 12h14M12 5l7 7-7 7" />
-                  </svg>
-                </button>
-              )}
-            </div>
-          </div>
-        )}
       </nav>
     </>
   );

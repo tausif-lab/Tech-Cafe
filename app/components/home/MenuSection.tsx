@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 // ADD this import
 import { useCart } from "../usermenu/Cartcontext";
 import AddToCart from "../usermenu/Addtocart";
+import { p } from "framer-motion/client";
 // ── Fonts ────────────────────────────────────────────────────────────────────
 const FontLoader = () => (
   <style>{`
@@ -19,9 +20,9 @@ const MENU_ITEMS = [
   {
     id: 1,
     name: "Mexican Pizza",
-    code: "MX.01",
+    code: "PZ.01",
     label: "Spicy Special",
-    price: "₹249",
+    price: "₹130",
     tag: "veg",
     emoji: "🍕",
     img: "/mexican-pizza.png",
@@ -34,8 +35,8 @@ const MENU_ITEMS = [
   },
   {
     id: 2,
-    name: "Paneer Sandwich",
-    code: "PS.02",
+    name: "Cheese Corn Sandwich",
+    code: "SW.02",
     label: "Cafe Classic",
     price: "₹180",
     tag: "veg",
@@ -53,7 +54,7 @@ const MENU_ITEMS = [
     name: "Masala Dosa",
     code: "DS.03",
     label: "South Star",
-    price: "₹120",
+    price: "₹50",
     tag: "veg",
     emoji: "🥞",
     img: "/dosa.png",
@@ -64,7 +65,39 @@ const MENU_ITEMS = [
     toppings: ["Potato Masala", "Chutney", "Sambar"],
     spice: 1,
   },
+  {
+    id:4,
+    code: "BV.04",
+    name: "Classic Cold Coffee",
+    label: "Beverage",
+    price: "₹50",
+    tag: "veg",
+    emoji: "🥤",
+    img: "/Cold Coffee.jpeg",
+    description: "Cool and refreshing chilled beverage made by blending coffee, milk, sugar, and ice, often topped with foam or ice cream for a creamy finish.",
+    calories: "200 kcal",
+    time: "5 min",
+    toppings: ["Coffee", "Milk", "Sugar"],
+    spice: 0,
+  },
+  {
+    id:5,
+    code: "MG.05",
+    name: "Peri Peri Maggi",
+    label:"quik prep",
+    price:"₹50",
+    tag:"veg",
+    emoji:"🍜",
+    img:"/peri-peri-maggi.png",
+    description:"Instant noodles tossed in a fiery peri peri sauce, garnished with fresh herbs and a squeeze of lime for a quick and spicy meal.",
+    calories:"350 kcal",
+    time:"7 min",
+    toppings:["Peri Peri Sauce", "Herbs", "Lime"],
+    spice:3,
+    },
+    
 ];
+
 
 
 // ── Spice dots (reused from menu.tsx pattern) ─────────────────────────────────
