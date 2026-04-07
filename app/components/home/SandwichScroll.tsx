@@ -35,7 +35,7 @@ export default function SandwichScroll() {
     scrollYProgress,
     //[0, 1],
     //[0, FRAME_COUNT - 1],
-    [0, 0.5],  // Animation completes at 60% of scroll instead of 100%
+    [0, 0.4],  // Animation completes at 60% of scroll instead of 100%
   [0, FRAME_COUNT - 1],
   );
 
