@@ -127,10 +127,11 @@ function statusColor(status: string) {
 
 // ── Avatar initials ───────────────────────────────────────────────────────────
 function Initials({ name }: { name: string }) {
-  const parts = (name || 'U').split(' ')
-  const ini   = parts.length >= 2
-    ? parts[0][0] + parts[parts.length - 1][0]
-    : parts[0].slice(0, 2)
+  const cleanName = (name || 'U').trim().replace(/\s+/g, ' ')
+  const parts = cleanName.split(' ')
+  const ini = parts.length >= 2
+    ? (parts[0]?.[0] || '') + (parts[parts.length - 1]?.[0] || '')
+    : parts[0]?.[0] || 'U'
   return <>{ini.toUpperCase()}</>
 }
 
@@ -276,10 +277,10 @@ export default function AccountPage() {
 
         {/* ── Top nav strip ── */}
         <div
-          className="w-full flex items-center justify-between px-6 md:px-12 py-4 anim-fade-in"
+          className="w-full flex flex-col sm:flex-row items-center justify-between gap-4 px-6 md:px-12 py-4 anim-fade-in"
           style={{ borderBottom: '1px solid rgba(232,225,207,0.1)' }}
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 self-start sm:self-auto hidden sm:flex">
             <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#D94B4B' }} />
             <span
               className="text-[9px] tracking-[0.55em] uppercase hidden md:block"
@@ -293,7 +294,7 @@ export default function AccountPage() {
               className="font-extrabold uppercase tracking-tight"
               style={{ fontFamily: "'Syne', sans-serif", fontSize: '1.1rem', letterSpacing: '-0.02em', color: '#E8E1CF' }}
             >
-              Clever<span style={{ color: '#D94B4B' }}>Codex.</span>
+              Co<span style={{ color: '#D94B4B' }}>Webd.</span>
             </span>
           </Link>
           <div className="flex items-center gap-4">
@@ -331,31 +332,33 @@ export default function AccountPage() {
           className="px-6 md:px-12 pt-12 pb-8 anim-fade-up"
           style={{ borderBottom: '2px solid rgba(232,225,207,0.1)' }}
         >
-          <div className="max-w-screen-lg mx-auto flex items-end justify-between gap-6 flex-wrap">
-            {/* Left: breadcrumb */}
-            <p
-              className="text-[9px] tracking-[0.5em] uppercase self-start"
-              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: 'rgba(232,225,207,0.3)' }}
-            >
-              CleverCodex &bull; <span style={{ color: '#D94B4B' }}>Account</span>
-            </p>
+          <div className="max-w-screen-lg mx-auto flex flex-col md:flex-row items-start md:items-end justify-between gap-6 md:gap-8">
+            {/* Left: breadcrumb & title area */}
+            <div className="flex flex-col gap-4 flex-1 w-full relative">
+              <p
+                className="text-[9px] tracking-[0.5em] uppercase"
+                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: 'rgba(232,225,207,0.3)' }}
+              >
+                Cowebd &bull; <span style={{ color: '#D94B4B' }}>Account</span>
+              </p>
 
-            {/* Centre: big title */}
-            <h1
-              className="font-extrabold uppercase leading-none flex-1 anim-fade-up delay-1"
-              style={{
-                fontFamily: "'Syne', sans-serif",
-                fontSize: 'clamp(3rem, 8vw, 7rem)',
-                letterSpacing: '-0.03em',
-                lineHeight: 0.92,
-                color: '#E8E1CF',
-              }}
-            >
-              My<br /><span style={{ color: '#D94B4B' }}>Account</span>
-            </h1>
+              {/* Centre: big title */}
+              <h1
+                className="font-extrabold uppercase leading-none anim-fade-up delay-1 break-words w-full"
+                style={{
+                  fontFamily: "'Syne', sans-serif",
+                  fontSize: 'clamp(2.5rem, 12vw, 7rem)',
+                  letterSpacing: '-0.03em',
+                  lineHeight: 0.92,
+                  color: '#E8E1CF',
+                }}
+              >
+                My<br /><span style={{ color: '#D94B4B' }}>Account</span>
+              </h1>
+            </div>
 
             {/* Right: avatar + meta */}
-            <div className="self-end flex items-center gap-4">
+            <div className="flex items-center gap-4 self-start md:self-end w-full md:w-auto p-4 md:p-0 mt-2 md:mt-0 acct-panel md:border-none md:bg-transparent rounded-lg md:rounded-none">
               {/* Avatar */}
               <div
                 className="w-14 h-14 flex items-center justify-center font-extrabold text-lg"
@@ -451,9 +454,9 @@ export default function AccountPage() {
                         {stat.label}
                       </span>
                     </div>
-                    <div className="px-5 py-4">
+                    <div className="px-5 py-4 overflow-hidden">
                       <p
-                        className="font-extrabold"
+                        className="font-extrabold truncate"
                         style={{
                           fontFamily: "'Syne', sans-serif",
                           fontSize: '2rem',

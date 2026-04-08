@@ -189,7 +189,7 @@ export default function LoginPageClient() {
                 color: "#E8E1CF",
               }}
             >
-              Clever<span style={{ color: "#D94B4B" }}>Codex.</span>
+              Co<span style={{ color: "#D94B4B" }}>webd.</span>
             </span>
           </Link>
         </div>
