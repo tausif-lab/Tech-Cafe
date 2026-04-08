@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+/*import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { sendPushToTokens } from '@/lib/firebase/admin'
 
@@ -8,7 +8,7 @@ import { sendPushToTokens } from '@/lib/firebase/admin'
  *
  * Internal endpoint — called by /api/orders on every new order.
  * Fetches all FCM tokens for the cafe and broadcasts a push notification.
- */
+ *
 export async function POST(request: NextRequest) {
   try {
     // Use service role to read all device tokens (bypasses RLS)
@@ -31,13 +31,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    /*Fetch all FCM tokens registered for this cafe
-    const { data: tokenRows, error: tokenError } = await supabase
-      .from('device_tokens')
-      .select('token')
-      .eq('cafe_id', cafeId)
     
-    if (tokenError) throw tokenError*/
     console.log('[send-notification] Looking for tokens for cafe:', cafeId)
 
 const { data: tokenRows, error: tokenError } = await supabase
@@ -67,6 +61,56 @@ if (tokenError) {
       {
         order_id:     orderId,
         cafe_id:      cafeId,
+        order_number: orderNumber,
+        click_action: '/admin',
+      }
+    )
+
+    return NextResponse.json({ sent: tokens.length })
+  } catch (error: any) {
+    console.error('[send-notification] Error:', error)
+    return NextResponse.json(
+      { error: error.message || 'Internal Server Error' },
+      { status: 500 }
+    )
+  }
+}
+*/
+
+import { NextRequest, NextResponse } from 'next/server'
+import { sendPushToTokens } from '@/lib/firebase/admin'
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json()
+    const { orderId, cafeId, orderNumber } = body as {
+      orderId: string
+      cafeId: string
+      orderNumber: string
+    }
+
+    if (!orderId || !cafeId || !orderNumber) {
+      return NextResponse.json(
+        { error: 'orderId, cafeId and orderNumber are required' },
+        { status: 400 }
+      )
+    }
+
+    // 🔥 TEMP HARDCODED TOKEN (YOUR PROVIDED TOKEN)
+    const tokens = [
+      "dUDdDQpgc_22epX1S2HpaL:APA91bHy8ijQ1Y_68BWwMdeA-qutTunjIi4r2pNr_BLQJSCHiTjSDWLzn_VuUw7ife_unDuqEr3CFTE-10ScYSeZcuGLX7LIXCdhHJk-NzQbludIngxYm3w"
+    ]
+
+    console.log("🔥 Using hardcoded token:", tokens)
+
+    // Send push notification
+    await sendPushToTokens(
+      tokens,
+      '🔥 TEST: New Order',
+      `Order ${orderNumber} is ready`,
+      {
+        order_id: orderId,
+        cafe_id: cafeId,
         order_number: orderNumber,
         click_action: '/admin',
       }
