@@ -1,4 +1,4 @@
-/*import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { sendPushToTokens } from '@/lib/firebase/admin'
 
@@ -8,7 +8,7 @@ import { sendPushToTokens } from '@/lib/firebase/admin'
  *
  * Internal endpoint — called by /api/orders on every new order.
  * Fetches all FCM tokens for the cafe and broadcasts a push notification.
- *
+ */
 export async function POST(request: NextRequest) {
   try {
     // Use service role to read all device tokens (bypasses RLS)
@@ -75,8 +75,8 @@ if (tokenError) {
     )
   }
 }
-*/
 
+/*
 import { NextRequest, NextResponse } from 'next/server'
 import { sendPushToTokens } from '@/lib/firebase/admin'
 
@@ -124,4 +124,4 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     )
   }
-}
+}*/
