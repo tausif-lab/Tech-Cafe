@@ -73,7 +73,7 @@ const MENU_ITEMS = [
     price: "₹50",
     tag: "veg",
     emoji: "🥤",
-    img: "/Coffee.avif",
+    img: "/Cold Coffee.jpeg",
     description: "Cool and refreshing chilled beverage made by blending coffee, milk, sugar, and ice, often topped with foam or ice cream for a creamy finish.",
     calories: "200 kcal",
     time: "5 min",
@@ -531,7 +531,7 @@ function FooterCTA() {
         ))}
       </div>
 
-      {/* CTA button — matches page.tsx Browse all button */}
+      {/* CTA button — matches page.tsx Browse all button 
       <button
         onClick={() => router.push("/categorysection")}
         className="group flex items-center gap-2 text-[10px] font-semibold tracking-widest uppercase px-5 py-2.5 transition-all duration-200 hover:bg-[#D94B4B]"
@@ -550,7 +550,34 @@ function FooterCTA() {
         >
           <path d="M5 12h14M12 5l7 7-7 7" />
         </svg>
-      </button>
+      </button>*/}
+      {/* CTA button — Scaled & Responsive */}
+<button
+  onClick={() => router.push("/categorysection")}
+  className="group flex items-center justify-center gap-3 font-semibold tracking-widest uppercase transition-all duration-300 hover:bg-[#D94B4B] 
+             /* Responsive Sizing */
+             text-xs px-6 py-3.5 
+             sm:text-sm sm:px-8 sm:py-4 
+             md:text-base md:px-10 md:py-5"
+  style={{
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
+    backgroundColor: "#1F3A2E",
+    color: "#E8E1CF",
+    borderRadius: "6px", // Slightly larger radius for a larger button
+  }}
+>
+  <span>Explore Full Menu</span>
+  <svg
+    /* Responsive Icon Size */
+    className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform duration-200"
+    viewBox="0 0 24 24" 
+    fill="none"
+    stroke="currentColor" 
+    strokeWidth="2.5"
+  >
+    <path d="M5 12h14M12 5l7 7-7 7" />
+  </svg>
+</button>
     </motion.div>
   );
 }

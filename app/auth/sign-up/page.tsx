@@ -134,7 +134,7 @@ export default function SignupPage() {
               className="font-extrabold uppercase tracking-tight"
               style={{ fontFamily: "'Syne', sans-serif", fontSize: '1.1rem', letterSpacing: '-0.02em', color: '#E8E1CF' }}
             >
-              Clever<span style={{ color: '#D94B4B' }}>Codex.</span>
+              Co<span style={{ color: '#D94B4B' }}>webd.</span>
             </span>
           </Link>
         </div>

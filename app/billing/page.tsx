@@ -16,10 +16,14 @@ const GST_RATE = 0.05;
 const PLATFORM_FEE = 10;
 
 const PAYMENT_METHODS = [
-  { id: "upi", label: "UPI", icon: "📲", description: "Google Pay, PhonePe, Paytm" },
-  { id: "card", label: "Card", icon: "💳", description: "Debit / Credit card" },
+  {
+    id: "upi",
+    label: "UPI",
+    icon: "📲",
+    description: "Google Pay, PhonePe, Paytm",
+  },
+
   { id: "cash", label: "Cash", icon: "💵", description: "Pay at counter" },
-  { id: "wallet", label: "Wallet", icon: "👜", description: "Campus wallet balance" },
 ];
 
 // ── Bill line row ─────────────────────────────────────────────────────────────
@@ -38,7 +42,11 @@ function BillRow({
       ref={ref}
       initial={{ opacity: 0, x: -16 }}
       animate={inView ? { opacity: 1, x: 0 } : {}}
-      transition={{ duration: 0.35, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
+      transition={{
+        duration: 0.35,
+        delay: index * 0.05,
+        ease: [0.22, 1, 0.36, 1],
+      }}
       className="flex items-center gap-4 py-4"
       style={{ borderBottom: "1px solid rgba(232,225,207,0.08)" }}
     >
@@ -47,7 +55,11 @@ function BillRow({
         className="flex-shrink-0 overflow-hidden"
         style={{ width: "48px", height: "48px", borderRadius: "2px" }}
       >
-        <img src={item.img} alt={item.name} className="w-full h-full object-cover" />
+        <img
+          src={item.img}
+          alt={item.name}
+          className="w-full h-full object-cover"
+        />
       </div>
 
       {/* Info */}
@@ -55,20 +67,30 @@ function BillRow({
         <div className="flex items-center gap-2 mb-0.5">
           <span
             className="text-[8px] tracking-[0.4em] uppercase"
-            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: "rgba(232,225,207,0.22)" }}
+            style={{
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              color: "rgba(232,225,207,0.22)",
+            }}
           >
             {item.code}
           </span>
           <span
             className="text-[8px] tracking-[0.35em] uppercase"
-            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: "rgba(217,75,75,0.6)" }}
+            style={{
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              color: "rgba(217,75,75,0.6)",
+            }}
           >
             {item.categoryName}
           </span>
         </div>
         <p
           className="text-sm font-extrabold uppercase truncate"
-          style={{ fontFamily: "'Syne', sans-serif", color: "#E8E1CF", letterSpacing: "-0.01em" }}
+          style={{
+            fontFamily: "'Syne', sans-serif",
+            color: "#E8E1CF",
+            letterSpacing: "-0.01em",
+          }}
         >
           {item.name}
         </p>
@@ -78,7 +100,10 @@ function BillRow({
       <div className="flex items-center gap-3 flex-shrink-0">
         <span
           className="text-[10px] tracking-[0.3em]"
-          style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: "rgba(232,225,207,0.3)" }}
+          style={{
+            fontFamily: "'Plus Jakarta Sans', sans-serif",
+            color: "rgba(232,225,207,0.3)",
+          }}
         >
           ×{item.quantity}
         </span>
@@ -111,7 +136,9 @@ function PaymentSelector({
             onClick={() => onSelect(method.id)}
             className="relative flex flex-col items-start p-4 text-left transition-all duration-200"
             style={{
-              backgroundColor: isActive ? "rgba(217,75,75,0.12)" : "rgba(232,225,207,0.04)",
+              backgroundColor: isActive
+                ? "rgba(217,75,75,0.12)"
+                : "rgba(232,225,207,0.04)",
               border: `2px solid ${isActive ? "#D94B4B" : "rgba(232,225,207,0.1)"}`,
               borderRadius: "2px",
               transition: "all 0.2s ease",
@@ -141,7 +168,9 @@ function PaymentSelector({
               className="text-[9px] mt-0.5"
               style={{
                 fontFamily: "'Plus Jakarta Sans', sans-serif",
-                color: isActive ? "rgba(232,225,207,0.45)" : "rgba(232,225,207,0.2)",
+                color: isActive
+                  ? "rgba(232,225,207,0.45)"
+                  : "rgba(232,225,207,0.2)",
               }}
             >
               {method.description}
@@ -184,9 +213,12 @@ function SuccessOverlay({
         >
           <p
             className="text-[10px] tracking-[0.55em] uppercase mb-3"
-            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: "rgba(232,225,207,0.35)" }}
+            style={{
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              color: "rgba(232,225,207,0.35)",
+            }}
           >
-            Snack Bistro &bull; Order Placed
+            Tech cafe &bull; Order Placed
           </p>
           <h2
             className="font-extrabold uppercase leading-none"
@@ -199,13 +231,16 @@ function SuccessOverlay({
           >
             Order
             <br />
-            <span style={{ color: "#D94B4B" }}>Confirmed!</span>
+            <span style={{ color: "#D94B4B" }}> Placed!</span>
           </h2>
           <p
             className="text-sm mt-4 max-w-xs mx-auto leading-relaxed"
-            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: "rgba(232,225,207,0.4)" }}
+            style={{
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              color: "rgba(232,225,207,0.4)",
+            }}
           >
-            Your food is being prepared. Ready in ~12 min at the counter. 🎉
+            Your food will be ready soon 
           </p>
         </motion.div>
         <motion.div
@@ -248,7 +283,10 @@ function SuccessOverlay({
 // ── Main export ───────────────────────────────────────────────────────────────
 export default function BillingPage() {
   const headerRef = useRef(null);
-  const headerInView = useInView(headerRef, { once: true, margin: "-40px 0px" });
+  const headerInView = useInView(headerRef, {
+    once: true,
+    margin: "-40px 0px",
+  });
   const { items, subtotal, totalItems, clearCart } = useCart();
   const router = useRouter();
 
@@ -262,10 +300,10 @@ export default function BillingPage() {
 
   const handlePlaceOrder = async () => {
     setLoading(true);
-    
+
     try {
       // Convert cart items to API format
-      const orderItems = items.map(item => ({
+      const orderItems = items.map((item) => ({
         menu_item_id: null, // Will be null until we have real menu items
         name: item.name,
         image_url: item.img,
@@ -278,37 +316,37 @@ export default function BillingPage() {
         add_ons_total: 0,
         quantity: item.quantity,
         unit_price: item.price,
-        total_price: item.price * item.quantity
+        total_price: item.price * item.quantity,
       }));
-      
+
       // Create order (payment disabled for demo)
-      const orderResponse = await fetch('/api/orders', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const orderResponse = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           items: orderItems,
-          paymentMethod: 'cash', // Default to cash for demo
-          notes: null
-        })
+          paymentMethod: "cash", // Default to cash for demo
+          notes: null,
+        }),
       });
-      
+
       const orderResult = await orderResponse.json();
-      
+
       if (orderResult.error) {
-        alert('Failed to create order: ' + orderResult.error);
+        alert("Failed to create order: " + orderResult.error);
         setLoading(false);
         return;
       }
-      
+
       const { orderId: newOrderId } = orderResult.data;
       setOrderId(newOrderId);
-      
+
       // Simulate processing delay
-      await new Promise(r => setTimeout(r, 1000));
-      
+      await new Promise((r) => setTimeout(r, 1000));
+
       setOrderPlaced(true);
       setLoading(false);
-      
+
       /* ═══════════════════════════════════════════════════════════
          RAZORPAY PAYMENT INTEGRATION (DISABLED FOR DEMO)
          
@@ -381,10 +419,9 @@ export default function BillingPage() {
       razorpay.open();
       
       ═══════════════════════════════════════════════════════════ */
-      
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'Unknown error';
-      alert('Error placing order: ' + message);
+      const message = error instanceof Error ? error.message : "Unknown error";
+      alert("Error placing order: " + message);
       setLoading(false);
     }
   };
@@ -394,13 +431,13 @@ export default function BillingPage() {
     if (orderId) {
       router.push(`/orders/${orderId}`);
     } else {
-      router.push('/orders');
+      router.push("/orders");
     }
   };
 
   const handleHome = () => {
     clearCart();
-    router.push('/');
+    router.push("/");
   };
 
   if (items.length === 0 && !orderPlaced) {
@@ -414,7 +451,10 @@ export default function BillingPage() {
           <span className="text-5xl opacity-30">🛒</span>
           <p
             className="text-[10px] tracking-[0.55em] uppercase"
-            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: "rgba(232,225,207,0.25)" }}
+            style={{
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              color: "rgba(232,225,207,0.25)",
+            }}
           >
             No items in your tray
           </p>
@@ -428,7 +468,14 @@ export default function BillingPage() {
               borderRadius: "2px",
             }}
           >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+            >
               <path d="M19 12H5M12 19l-7-7 7-7" />
             </svg>
             Back to Menu
@@ -442,7 +489,9 @@ export default function BillingPage() {
     <>
       <FontLoader />
 
-      {orderPlaced && <SuccessOverlay onTrackOrder={handleTrackOrder} onHome={handleHome} />}
+      {orderPlaced && (
+        <SuccessOverlay onTrackOrder={handleTrackOrder} onHome={handleHome} />
+      )}
 
       <section
         className="relative min-h-screen overflow-hidden"
@@ -455,7 +504,6 @@ export default function BillingPage() {
           style={{ borderBottom: "2px solid rgba(232,225,207,0.12)" }}
         >
           <div className="max-w-screen-xl mx-auto flex items-end justify-between gap-8 flex-wrap">
-
             {/* Left: breadcrumb */}
             <motion.p
               initial={{ opacity: 0 }}
@@ -475,7 +523,11 @@ export default function BillingPage() {
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={headerInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
+              transition={{
+                duration: 0.6,
+                delay: 0.05,
+                ease: [0.22, 1, 0.36, 1],
+              }}
               className="font-extrabold uppercase leading-none flex-1"
               style={{
                 fontFamily: "'Syne', sans-serif",
@@ -532,7 +584,9 @@ export default function BillingPage() {
                   fontFamily: "'Plus Jakarta Sans', sans-serif",
                   color: "rgba(232,225,207,0.2)",
                   borderRight:
-                    i < items.length - 1 ? "1px solid rgba(232,225,207,0.08)" : "none",
+                    i < items.length - 1
+                      ? "1px solid rgba(232,225,207,0.08)"
+                      : "none",
                   minWidth: "140px",
                 }}
               >
@@ -553,7 +607,10 @@ export default function BillingPage() {
               {/* Section label */}
               <p
                 className="text-[9px] tracking-[0.5em] uppercase mb-6"
-                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: "rgba(232,225,207,0.25)" }}
+                style={{
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  color: "rgba(232,225,207,0.25)",
+                }}
               >
                 Order Summary
               </p>
@@ -574,8 +631,15 @@ export default function BillingPage() {
                   color: "rgba(232,225,207,0.25)",
                 }}
               >
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
-                  className="group-hover:-translate-x-1 transition-transform duration-200">
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  className="group-hover:-translate-x-1 transition-transform duration-200"
+                >
                   <path d="M19 12H5M12 19l-7-7 7-7" />
                 </svg>
                 Edit Order
@@ -585,12 +649,14 @@ export default function BillingPage() {
 
           {/* ── RIGHT: billing summary + payment ── */}
           <div className="px-6 md:px-8 py-8 flex flex-col gap-8">
-
             {/* Price breakdown */}
             <div>
               <p
                 className="text-[9px] tracking-[0.5em] uppercase mb-5"
-                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: "rgba(232,225,207,0.25)" }}
+                style={{
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  color: "rgba(232,225,207,0.25)",
+                }}
               >
                 Bill Breakdown
               </p>
@@ -598,19 +664,36 @@ export default function BillingPage() {
               <div className="flex flex-col gap-3">
                 {[
                   { label: "Subtotal", value: `₹${subtotal}`, muted: true },
-                  { label: `GST (${GST_RATE * 100}%)`, value: `₹${gst}`, muted: true },
-                  { label: "Platform Fee", value: `₹${PLATFORM_FEE}`, muted: true },
+                  {
+                    label: `GST (${GST_RATE * 100}%)`,
+                    value: `₹${gst}`,
+                    muted: true,
+                  },
+                  {
+                    label: "Platform Fee",
+                    value: `₹${PLATFORM_FEE}`,
+                    muted: true,
+                  },
                 ].map(({ label, value }) => (
-                  <div key={label} className="flex items-center justify-between">
+                  <div
+                    key={label}
+                    className="flex items-center justify-between"
+                  >
                     <span
                       className="text-[10px] tracking-[0.35em] uppercase"
-                      style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: "rgba(232,225,207,0.3)" }}
+                      style={{
+                        fontFamily: "'Plus Jakarta Sans', sans-serif",
+                        color: "rgba(232,225,207,0.3)",
+                      }}
                     >
                       {label}
                     </span>
                     <span
                       className="text-sm font-semibold"
-                      style={{ fontFamily: "'Syne', sans-serif", color: "rgba(232,225,207,0.45)" }}
+                      style={{
+                        fontFamily: "'Syne', sans-serif",
+                        color: "rgba(232,225,207,0.45)",
+                      }}
                     >
                       {value}
                     </span>
@@ -618,11 +701,19 @@ export default function BillingPage() {
                 ))}
 
                 {/* Total divider */}
-                <div style={{ borderTop: "2px solid rgba(232,225,207,0.1)", paddingTop: "12px" }}>
+                <div
+                  style={{
+                    borderTop: "2px solid rgba(232,225,207,0.1)",
+                    paddingTop: "12px",
+                  }}
+                >
                   <div className="flex items-end justify-between">
                     <span
                       className="text-[10px] tracking-[0.5em] uppercase"
-                      style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: "rgba(232,225,207,0.5)" }}
+                      style={{
+                        fontFamily: "'Plus Jakarta Sans', sans-serif",
+                        color: "rgba(232,225,207,0.5)",
+                      }}
                     >
                       Total
                     </span>
@@ -646,11 +737,17 @@ export default function BillingPage() {
             <div>
               <p
                 className="text-[9px] tracking-[0.5em] uppercase mb-4"
-                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: "rgba(232,225,207,0.25)" }}
+                style={{
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  color: "rgba(232,225,207,0.25)",
+                }}
               >
                 Payment Method
               </p>
-              <PaymentSelector selected={selectedPayment} onSelect={setSelectedPayment} />
+              <PaymentSelector
+                selected={selectedPayment}
+                onSelect={setSelectedPayment}
+              />
             </div>
 
             {/* Place Order CTA */}
@@ -673,14 +770,24 @@ export default function BillingPage() {
                   <>
                     <div
                       className="w-3 h-3 rounded-full border-2 border-t-transparent animate-spin"
-                      style={{ borderColor: "rgba(232,225,207,0.5)", borderTopColor: "transparent" }}
+                      style={{
+                        borderColor: "rgba(232,225,207,0.5)",
+                        borderTopColor: "transparent",
+                      }}
                     />
                     Processing...
                   </>
                 ) : (
                   <>
                     Place Order &bull; ₹{total}
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                    >
                       <path d="M5 12h14M12 5l7 7-7 7" />
                     </svg>
                   </>
@@ -689,7 +796,10 @@ export default function BillingPage() {
 
               <p
                 className="text-center mt-3 text-[8px] tracking-[0.3em] uppercase"
-                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", color: "rgba(232,225,207,0.12)" }}
+                style={{
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  color: "rgba(232,225,207,0.12)",
+                }}
               >
                 By placing your order you agree to our terms
               </p>
@@ -703,18 +813,20 @@ export default function BillingPage() {
           style={{ borderTop: "2px solid rgba(232,225,207,0.1)" }}
         >
           <div className="flex items-center gap-6 flex-wrap">
-            {["📍 GEC Campus", "⚡ Ready in ~12 min", "🔒 Secure Payment"].map((t) => (
-              <span
-                key={t}
-                className="text-[10px] tracking-[0.35em] uppercase"
-                style={{
-                  fontFamily: "'Plus Jakarta Sans', sans-serif",
-                  color: "rgba(232,225,207,0.2)",
-                }}
-              >
-                {t}
-              </span>
-            ))}
+            {["📍 GEC Campus", "⚡ Ready in ~12 min", "🔒 Secure Payment"].map(
+              (t) => (
+                <span
+                  key={t}
+                  className="text-[10px] tracking-[0.35em] uppercase"
+                  style={{
+                    fontFamily: "'Plus Jakarta Sans', sans-serif",
+                    color: "rgba(232,225,207,0.2)",
+                  }}
+                >
+                  {t}
+                </span>
+              ),
+            )}
           </div>
           <span
             className="text-[9px] tracking-[0.4em] uppercase"
@@ -723,7 +835,7 @@ export default function BillingPage() {
               color: "rgba(232,225,207,0.15)",
             }}
           >
-            Snack Bistro &copy; 2025
+            Tech cafe &copy; 2025
           </span>
         </div>
       </section>
