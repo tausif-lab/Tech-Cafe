@@ -279,7 +279,7 @@ const MENU_DATA: Record<
     tag: "sweet",
     veg: true,
     spice: 0,
-    img: "/chocolate.jpg",
+    img: "/chocolate.jpeg",
     description: "Dessert sandwich filled with melted chocolate.",
     toppings: ["Chocolate"],
   }
