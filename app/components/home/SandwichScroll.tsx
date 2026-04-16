@@ -10,6 +10,19 @@ import clsx from "clsx";
 
 const FRAME_COUNT = 200;
 
+/*const FontLoader = () => (
+  <style>{`
+    @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap');
+    .ticker-text {
+      animation: ticker-move 18s linear infinite;
+    }
+    @keyframes ticker-move {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+  `}</style>
+);*/
+
 const FontLoader = () => (
   <style>{`
     @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap');
@@ -19,6 +32,10 @@ const FontLoader = () => (
     @keyframes ticker-move {
       0% { transform: translateX(0); }
       100% { transform: translateX(-50%); }
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(8px); }
     }
   `}</style>
 );
@@ -225,7 +242,7 @@ export default function SandwichScroll() {
                 color: "rgba(31,58,46,0.45)",
               }}
             >
-              Snack Bistro
+              Tech Cafe
             </span>
             <div className="flex items-center gap-2 mt-0.5">
               <div className="w-1 h-1 rounded-full bg-[#D94B4B]" />
@@ -253,7 +270,7 @@ export default function SandwichScroll() {
                 color: "rgba(31,58,46,0.35)",
               }}
             >
-              Mon–Fri &nbsp;9AM – 10PM
+              Mon–Sat &nbsp;10:30AM – 8:30PM
             </span>
           </motion.div>
 
@@ -446,7 +463,7 @@ export default function SandwichScroll() {
             </div>
           </motion.div>
 
-          {/* ── BOTTOM RIGHT: scroll indicator ── */}
+          {/* ── BOTTOM RIGHT: scroll indicator ── 
           <motion.div
             style={{ opacity: titleOpacity }}
             className="absolute bottom-10 right-6 md:right-12 z-30 flex flex-col items-center gap-2 pointer-events-none"
@@ -468,7 +485,48 @@ export default function SandwichScroll() {
                   "linear-gradient(to bottom, rgba(31,58,46,0.3), transparent)",
               }}
             />
-          </motion.div>
+          </motion.div>*/}
+          {/* ── BOTTOM RIGHT: scroll indicator ── */}
+
+        {/* ── BOTTOM RIGHT: scroll indicator ── */}
+<motion.div
+  style={{ opacity: titleOpacity }}
+  className="absolute bottom-8 right-6 md:right-12 z-30 flex flex-col items-center gap-3 pointer-events-none"
+>
+  {/* Scroll text */}
+  <span
+    className="text-sm tracking-[0.4em] uppercase rotate-90 origin-center mb-8"
+    style={{
+      fontFamily: "'Syne', sans-serif",
+      color: "rgba(31,58,46,1.0)",
+      fontWeight: 800,
+      fontSize: "clamp(0.75rem, 1.5vw, 0.95rem)",
+    }}
+  >
+    Scroll
+  </span>
+  
+  {/* Animated line with dot */}
+  <div className="flex flex-col items-center gap-2">
+    <div
+      className="w-0.5 h-16"
+      style={{
+        backgroundColor: "rgba(217,75,75,0.35)",
+        background:
+          "linear-gradient(to bottom, rgba(217,75,75,0.5), rgba(217,75,75,0.1))",
+      }}
+    />
+    {/* Animated dot */}
+    <div
+      className="w-2 h-2 rounded-full"
+      style={{
+        backgroundColor: "#D94B4B",
+        animation: "bounce 2s ease-in-out infinite",
+      }}
+    />
+  </div>
+</motion.div>
+{/* Add bounce animation to FontLoader style tag */}
         </div>
       </div>
     </>
