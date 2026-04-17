@@ -94,10 +94,10 @@ K --> L[Analytics Update]
 | Layer        | Technologies                     |
 |--------------|---------------------------------|
 | Frontend     | Next.js, Tailwind CSS          |
-| Backend      | Node.js / Express.js           |
-| Database     | MongoDB                        |
+| Backend      | Next.js           |
+| Database     |Supabase                   |
 | Notifications| Firebase Cloud Messaging (FCM) |
-| Email        | NodeMailer / Email Service     |
+| Email        | Brevo     |
 
 ---
 
