@@ -208,7 +208,7 @@ export default function Navbar() {
               // Show login button when not logged in
               <button
                 onClick={() => router.push("/auth/login")}
-                className="hidden md:flex items-center gap-2 px-4 py-2 text-[9px] font-bold tracking-widest uppercase transition-all duration-200 hover:scale-[1.03] active:scale-[0.97]"
+                className="flex items-center gap-2 px-4 py-2 text-[9px] font-bold tracking-widest uppercase transition-all duration-200 hover:scale-[1.03] active:scale-[0.97]"
                 style={{
                   fontFamily: "'Plus Jakarta Sans', sans-serif",
                   backgroundColor: "#D94B4B",
